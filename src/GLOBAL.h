@@ -1,4 +1,4 @@
-#define debugging false
+#define debugging true
 #define NOSCREEN 0
 #define ScreenFrameRate 30   // Refresh rate for the screen 
 

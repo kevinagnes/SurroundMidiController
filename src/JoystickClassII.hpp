@@ -4,6 +4,7 @@
 #include <AH/Hardware/Button.hpp>
 #include <Keyboard.h>
 
+
 #define K_UP       0xDA
 #define K_DOWN     0xD9
 #define K_LEFT     0xD8
@@ -35,7 +36,8 @@ class ArrowJoystick : public MIDIOutputElement
 
         if (activatePin.update() == Button::Rising)  
         {
-          Control_Surface.MIDI().sendCC({3, channel}, 127);
+          if (debugging==true) takeScreenShoot = !takeScreenShoot;
+          else Control_Surface.MIDI().sendCC({3, channel}, 127);
         }
 
         if (!changed)
@@ -126,4 +128,6 @@ class ArrowJoystick : public MIDIOutputElement
     bool  activateJoy;
     unsigned long timerCheck;     
     MIDICNChannel channel;
+  public:
+    bool takeScreenShoot;  
 };

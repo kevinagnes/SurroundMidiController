@@ -135,6 +135,12 @@ void loop() {
      programChange();
   }
 
+  if (vPOTstick.takeScreenShoot==true)
+  {
+    tft.screenshotToConsole();
+    vPOTstick.takeScreenShoot = !vPOTstick.takeScreenShoot;
+  }
+
 #if NOSCREEN==0
   if (lcdState == 1) if (millis() - fpsTimer > (1000/(ScreenFrameRate*frameMultiplier)) ) ScreenUpdate();
   frameCount += 1;
