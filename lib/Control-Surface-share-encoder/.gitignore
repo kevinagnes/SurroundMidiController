@@ -1,0 +1,12 @@
+# .vscode/
+.vscode/tags
+*.pc
+.vscode/ipch
+
+.~lock*
+__pycache__/
+
+*.tmp
+*.hex
+
+docs
