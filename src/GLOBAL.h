@@ -130,8 +130,9 @@ byte oldcc[10],
      oldccmuxTransport[6],
      oldccmuxChannel[6];
 
-
+/*
 #if debugging==true
 unsigned long debugDelay,
               olddebugDelay;
 #endif     
+*/

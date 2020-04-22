@@ -35,9 +35,14 @@ class PanJoystick : public MIDIOutputElement
       angleDeg = angleRad;
       angleRad               += PI_f;               // [0, +2π]
       diversity         = hypot(xx, yy)/bias;       // [0, 1]
+
+    
+      /*
       #if (debugging==true)
       Serial.println("diversity: " + (String)diversity);
       #endif
+      */
+
       if (0.96F < diversity > 1.0F) diversity = 1.0F;
 
       // Map to MIDI CC range
