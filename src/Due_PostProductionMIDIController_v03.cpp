@@ -9,7 +9,7 @@
 void setup() 
 {
   
-#if debugging==true 
+#if debugging==true || screenShootEnable==true 
 Serial.begin(115200);
 #endif
   
@@ -30,6 +30,11 @@ Serial.begin(115200);
   {
     encEQ[r].disable();
   }
+
+  for (int r=0;r<10;r++)
+  {
+    encSMART[r].disable();
+  }
   
 #if NOSCREEN==0
   tft.begin();
@@ -48,7 +53,8 @@ Serial.begin(115200);
 
 void programChange()
 {
-    boolmode = !boolmode;
+    modechange += 1;
+    if (modechange > 2 ) modechange = 0;
     
 #if NOSCREEN==0   
     if (lcdState == 1) tftStart();
@@ -56,13 +62,19 @@ void programChange()
     
     for (int r=0;r<10;r++)
     {
-     if (encGENERAL[r].isEnabled())
+     if (encGENERAL[r].isEnabled() && modechange == 2)
      {
         encGENERAL[r].disable();
+        encSMART[r].resetPositionOffset();
+        encSMART[r].enable();
+     }
+     else if (encSMART[r].isEnabled() && modechange == 0)
+     {
+        encSMART[r].disable();
         encEQ[r].resetPositionOffset();
         encEQ[r].enable();
      }
-     else
+     else if (encEQ[r].isEnabled() && modechange == 1)
      {
         encEQ[r].disable();
         encGENERAL[r].resetPositionOffset();
@@ -134,12 +146,14 @@ void loop() {
   {
      programChange();
   }
-
+  
+#if screenShootEnable==true
   if (vPOTstick.takeScreenShoot==true)
   {
     tft.screenshotToConsole();
     vPOTstick.takeScreenShoot = !vPOTstick.takeScreenShoot;
   }
+#endif
 
 #if NOSCREEN==0
   if (lcdState == 1) if (millis() - fpsTimer > (1000/(ScreenFrameRate*frameMultiplier)) ) ScreenUpdate();

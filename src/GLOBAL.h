@@ -1,4 +1,5 @@
-#define debugging true
+#define debugging false
+#define screenShootEnabled false
 #define NOSCREEN 0
 #define ScreenFrameRate 30   // Refresh rate for the screen 
 
@@ -38,14 +39,12 @@
 // ENCODER
 #define speedMultiplier 1         // encoder rotation speed
 #define encoderType 4             // type of encoder
-#define timeBackToBankZero 500    // timer
+#define timeBackToBankZero 2000   // timer
 #define logCurveDb 8
 
 unsigned long timer[10], 
               txtTimer,
               frameTimer, 
-              backToLevelsTimer, 
-              timerViewChange,
               refreshTime,
               previousDecay[6],
               decayTime[6],
@@ -61,16 +60,13 @@ const int xCompPos[8] = { 0, 0,-120,-120, 90, 90, 0, 0},
       
 bool toggle[10], 
      timerToggle[10],
-     boolmode=1,
      sleepState = false,
      lcdState = 1,
      light,
-     changeViewMode = false,
      decaying[6],
      transportToggle[6],
      oldtransportToggle[6],
      EqIsOn[8],
-     ViewChange,
      surroundToggle[2], 
      isTimecode;        
 
@@ -78,12 +74,15 @@ uint8_t ccMode[10],
         blockheight = 8, //8
         spacing = 2, // 2
         circleSize = 20,
-        frameMultiplier = 1;
+        frameMultiplier = 1,
+        modechange = 1;
         
 int soloColour[6], peakValue[6], cccConverted[10];
 
-const uint16_t xPos[8] = { 35, 55, 120, 120, 190, 190, 260, 285},
-               yPos[8] = {180, 110, 80, 170,  80, 170, 110, 180},
+const uint16_t xPos[8]  = { 35, 55, 120, 120, 190, 190, 260, 285},
+               yPos[8]  = {180, 110, 80, 170,  80, 170, 110, 180},
+               xxPos[8]  = { 35, 55, 120, 120, 190, 190, 260, 285},
+               yyPos[8]  = {160, 90, 80, 170,  80, 170, 90, 160},
                circleColour[] = {BLACK,RED,BLUE,YELLOW},
                vuXpos[6] = {10, 60, 110, 160, 210, 260}, 
                vunameXpos[6] = {260,210,160,110,60,10}, 
@@ -98,6 +97,7 @@ uint16_t vuColor[6] = {GREEN,GREEN,GREEN,GREEN,GREEN,GREEN},
          previousyy,
          width = 30,
          color = GREEN,
+         smartColour,
          TRANSPORT_COLOUR = ORANGE,
          timeCodeColour[3] = {ORANGE,WHITE,RED},
          peak[6],
@@ -124,8 +124,9 @@ String EQText1[8] = {"HPF"," LS"," P1"," P2"," P3"," P4"," HS","LPF"},
        beatStr[3],
        frameStr[4];
 
-byte oldcc[10],
-     oldccc[10],
+byte oldcc[10],          // EQ      Mode
+     oldccc[10],         // GENERAL Mode
+     oldcccc[10],        // SMART   Mode
      oldSurroundJoy[2], 
      oldccmuxTransport[6],
      oldccmuxChannel[6];

@@ -45,17 +45,6 @@ Bankable::CCButton muxb[6] = { // buttonMidi[6] = {119,118,117,116,115,114};
   {{sixButBank, BankType::CHANGE_CHANNEL}, mux.pin(9), {buttonMidi[5], CHANNEL_1}}, 
 };
 
-
-/*
-Bankable::CCValue<4> ccmuxb[6] = {
-  {{bank[0], BankType::CHANGE_ADDRESS}, {buttonMidi[0], CHANNEL_1}},
-  {{bank[1], BankType::CHANGE_ADDRESS}, {buttonMidi[1], CHANNEL_1}},
-  {{bank[2], BankType::CHANGE_ADDRESS}, {buttonMidi[2], CHANNEL_1}},
-  {{bank[3], BankType::CHANGE_ADDRESS}, {buttonMidi[3], CHANNEL_1}},
-  {{bank[4], BankType::CHANGE_ADDRESS}, {buttonMidi[4], CHANNEL_1}},
-  {{bank[5], BankType::CHANGE_ADDRESS}, {buttonMidi[5], CHANNEL_1}},
-}; 
-*/
 Encoder enc0(23,22), 
         enc1(25,24),
         enc2(27,26),
@@ -81,6 +70,34 @@ Bankable::BorrowedCCRotaryEncoder encEQ[10] =
   {{bank[9], BankType::CHANGE_ADDRESS},enc9, {ccEnc[9],CHANNEL_1}, 2, 4,},   
 }; 
 
+Bankable::BorrowedCCRotaryEncoder encGENERAL[10] = 
+{
+  {{bank[0], BankType::CHANGE_CHANNEL}, enc0, {1,  CHANNEL_1}, 2, 4,},
+  {{bank[1], BankType::CHANGE_CHANNEL}, enc1, {2,  CHANNEL_1}, 2, 4,},
+  {{bank[2], BankType::CHANGE_CHANNEL}, enc2, {3,  CHANNEL_1}, 2, 4,},
+  {{bank[3], BankType::CHANGE_CHANNEL}, enc3, {4,  CHANNEL_1}, 2, 4,},
+  {{bank[4], BankType::CHANGE_CHANNEL}, enc4, {5,  CHANNEL_1}, 2, 4,},
+  {{bank[5], BankType::CHANGE_CHANNEL}, enc5, {6,  CHANNEL_1}, 2, 4,},
+  {{bank[6], BankType::CHANGE_CHANNEL}, enc6, {7,  CHANNEL_1}, 2, 4,},
+  {{bank[7], BankType::CHANGE_CHANNEL}, enc7, {8,  CHANNEL_1}, 2, 4,},
+  {{bank[8], BankType::CHANGE_CHANNEL}, enc8, {9,  CHANNEL_1}, 2, 4,},
+  {{bank[9], BankType::CHANGE_CHANNEL}, enc9, {10, CHANNEL_1}, 2, 4,},   
+};
+
+Bankable::BorrowedCCRotaryEncoder encSMART[10] = 
+{
+  {{bank[0], BankType::CHANGE_CHANNEL}, enc0, {1,  CHANNEL_5}, 2, 4,},
+  {{bank[1], BankType::CHANGE_CHANNEL}, enc1, {2,  CHANNEL_5}, 2, 4,},
+  {{bank[2], BankType::CHANGE_CHANNEL}, enc2, {3,  CHANNEL_5}, 2, 4,},
+  {{bank[3], BankType::CHANGE_CHANNEL}, enc3, {4,  CHANNEL_5}, 2, 4,},
+  {{bank[4], BankType::CHANGE_CHANNEL}, enc4, {5,  CHANNEL_5}, 2, 4,},
+  {{bank[5], BankType::CHANGE_CHANNEL}, enc5, {6,  CHANNEL_5}, 2, 4,},
+  {{bank[6], BankType::CHANGE_CHANNEL}, enc6, {7,  CHANNEL_5}, 2, 4,},
+  {{bank[7], BankType::CHANGE_CHANNEL}, enc7, {8,  CHANNEL_5}, 2, 4,},
+  {{bank[8], BankType::CHANGE_CHANNEL}, enc8, {9,  CHANNEL_5}, 2, 4,},
+  {{bank[9], BankType::CHANGE_CHANNEL}, enc9, {10, CHANNEL_5}, 2, 4,},   
+};
+
 Bankable::CCValue<4> cc[10] =
 {
   {{bank[0], BankType::CHANGE_ADDRESS}, {ccEnc[0], CHANNEL_1}},
@@ -95,35 +112,33 @@ Bankable::CCValue<4> cc[10] =
   {{bank[9], BankType::CHANGE_ADDRESS}, {ccEnc[9], CHANNEL_1}},
 };
 
-
-Bankable::BorrowedCCRotaryEncoder encGENERAL[10] = 
-{
-  {{bank[0], BankType::CHANGE_CHANNEL}, enc0, {1, CHANNEL_1}, 2, 4,},
-  {{bank[1], BankType::CHANGE_CHANNEL}, enc1, {2, CHANNEL_1}, 2, 4,},
-  {{bank[2], BankType::CHANGE_CHANNEL}, enc2, {3, CHANNEL_1}, 2, 4,},
-  {{bank[3], BankType::CHANGE_CHANNEL}, enc3, {4, CHANNEL_1}, 2, 4,},
-  {{bank[4], BankType::CHANGE_CHANNEL}, enc4, {5, CHANNEL_1}, 2, 4,},
-  {{bank[5], BankType::CHANGE_CHANNEL}, enc5, {6, CHANNEL_1}, 2, 4,},
-  {{bank[6], BankType::CHANGE_CHANNEL}, enc6, {7, CHANNEL_1}, 2, 4,},
-  {{bank[7], BankType::CHANGE_CHANNEL}, enc7, {8, CHANNEL_1}, 2, 4,},
-  {{bank[8], BankType::CHANGE_CHANNEL}, enc8, {9, CHANNEL_1}, 2, 4,},
-  {{bank[9], BankType::CHANGE_CHANNEL}, enc9, {10, CHANNEL_1}, 2, 4,},   
-};
-
 Bankable::CCValue<4> ccc[10] = 
 {
-  {{bank[0], BankType::CHANGE_CHANNEL}, {1, CHANNEL_1}},
-  {{bank[1], BankType::CHANGE_CHANNEL}, {2, CHANNEL_1}},
-  {{bank[2], BankType::CHANGE_CHANNEL}, {3, CHANNEL_1}},
-  {{bank[3], BankType::CHANGE_CHANNEL}, {4, CHANNEL_1}},
-  {{bank[4], BankType::CHANGE_CHANNEL}, {5, CHANNEL_1}},
-  {{bank[5], BankType::CHANGE_CHANNEL}, {6, CHANNEL_1}},
-  {{bank[6], BankType::CHANGE_CHANNEL}, {7, CHANNEL_1}},
-  {{bank[7], BankType::CHANGE_CHANNEL}, {8, CHANNEL_1}},
-  {{bank[8], BankType::CHANGE_CHANNEL}, {9, CHANNEL_1}},
+  {{bank[0], BankType::CHANGE_CHANNEL}, {1,  CHANNEL_1}},
+  {{bank[1], BankType::CHANGE_CHANNEL}, {2,  CHANNEL_1}},
+  {{bank[2], BankType::CHANGE_CHANNEL}, {3,  CHANNEL_1}},
+  {{bank[3], BankType::CHANGE_CHANNEL}, {4,  CHANNEL_1}},
+  {{bank[4], BankType::CHANGE_CHANNEL}, {5,  CHANNEL_1}},
+  {{bank[5], BankType::CHANGE_CHANNEL}, {6,  CHANNEL_1}},
+  {{bank[6], BankType::CHANGE_CHANNEL}, {7,  CHANNEL_1}},
+  {{bank[7], BankType::CHANGE_CHANNEL}, {8,  CHANNEL_1}},
+  {{bank[8], BankType::CHANGE_CHANNEL}, {9,  CHANNEL_1}},
   {{bank[9], BankType::CHANGE_CHANNEL}, {10, CHANNEL_1}},   
 };
 
+Bankable::CCValue<4> cccc[10] = 
+{
+  {{bank[0], BankType::CHANGE_CHANNEL}, {1,  CHANNEL_5}},
+  {{bank[1], BankType::CHANGE_CHANNEL}, {2,  CHANNEL_5}},
+  {{bank[2], BankType::CHANGE_CHANNEL}, {3,  CHANNEL_5}},
+  {{bank[3], BankType::CHANGE_CHANNEL}, {4,  CHANNEL_5}},
+  {{bank[4], BankType::CHANGE_CHANNEL}, {5,  CHANNEL_5}},
+  {{bank[5], BankType::CHANGE_CHANNEL}, {6,  CHANNEL_5}},
+  {{bank[6], BankType::CHANGE_CHANNEL}, {7,  CHANNEL_5}},
+  {{bank[7], BankType::CHANGE_CHANNEL}, {8,  CHANNEL_5}},
+  {{bank[8], BankType::CHANGE_CHANNEL}, {9,  CHANNEL_5}},
+  {{bank[9], BankType::CHANGE_CHANNEL}, {10, CHANNEL_5}},  
+};
 
 MCU::TimeDisplay timedisplay = {};
 
@@ -139,6 +154,19 @@ MCU::VU vu[] =
 
 MCU::LCD<> trackName = {};
 
+
+/**
+     * @brief   Constructor.
+     * 
+     * @param   display 
+     * @param   lcd 
+     * @param   bank 
+     * @param   track 
+     *          The track number to display [1, 8].
+     * @param   loc 
+     * @param   textSize 
+     * @param   color 
+     */
 
 Bankable::CCValue<1> ccmuxTransport[6] = 
 {
@@ -160,18 +188,6 @@ Bankable::CCValue<1> ccmuxChannel[6] =
   {{sixButBank2, BankType::CHANGE_ADDRESS}, {buttonMidi[4], CHANNEL_7}},
   {{sixButBank2, BankType::CHANGE_ADDRESS}, {buttonMidi[5], CHANNEL_7}},
 };
-
-/*CCValue ccmuxb[6] = 
-{
-  {buttonMidi[0], CHANNEL_2},
-  {buttonMidi[1], CHANNEL_2},
-  {buttonMidi[2], CHANNEL_2},
-  {buttonMidi[3], CHANNEL_2},
-  {buttonMidi[4], CHANNEL_2},
-  {buttonMidi[5], CHANNEL_2},
-};*/
-
-
 
 // Encoder button using ClickEncoder library
 DigitalButton b1 = DigitalButton(bEnc[0]);
