@@ -186,7 +186,7 @@ void firstCallSmartView()
         Serial.println(String(j) + " " + (String)buffer1);
         #endif
 
-      tft.printAt(buffer1, xxPos[j]-15,yyPos[j]-30);
+      tft.printAt(buffer1, xxPos[j]-15,yyPos[j]-28);
 
         const char *text2 = trackName.getText() + (7 * j) + 56;
         char buffer2[7];
@@ -196,7 +196,7 @@ void firstCallSmartView()
         Serial.println(String(j) + " " + (String)buffer2);
         #endif
 
-      tft.printAt(buffer2,xxPos[j]-15,yyPos[j]+30);
+      tft.printAt(buffer2,xxPos[j]-15,yyPos[j]+25);
       
     }      
 }  
@@ -207,56 +207,18 @@ void topParametersUpdate()
     
 if (modechange==1) // UPDATE VALUES FOR GENERAL
 {   
+  /*
   for (int j=0; j<10; j++)
     {   
-     if (cccc[j].getValue() != oldcccc[j]) 
+     if (ccc[j].getValue() != oldccc[j]) 
      { 
      
      timer[j] = millis(); 
-          /*    
-          if (ccMode[j] == 0) 
-          { 
-            tft.setTextColor(CYAN);
-            if (j == 2) cccConverted[j] = map(ccc[j].getValue(),0,127,-50,0);
-            if (j == 3) cccConverted[j] = fscale(0,127,0,200,ccc[j].getValue(),-2.2);
-            if (j == 4) cccConverted[j] = mapLog(ccc[j].getValue(),0.0,127.0,1.0,30.0);
-            if (j == 5) cccConverted[j] = (int)mapLog(ccc[j].getValue(),0,127,5,5000);
-            if (j == 7) cccConverted[j] = fscale(0,127,-100,6,ccc[j].getValue(),logCurveDb);
-            if (j == 8) cccConverted[j] = fscale(0,127,-80,6,ccc[j].getValue(),logCurveDb);
-            if (j == 9) cccConverted[j] = map(ccc[j].getValue(),0,127,-180,180);
-                    
-            GeneralPrinter = (String)cccConverted[j] + CompText1scale[j];
-            
-            tft.printAlignedOffseted(CompText1[j], gTextAlignTopLeft, 0, 24, gTextEraseFullLine);
-            tft.printAlignedOffseted(GeneralPrinter, gTextAlignTopLeft, 200, 24, gTextEraseToEOL);
-          }
-          if (ccMode[j] == 1) 
-          { 
-            tft.setTextColor(MAGENTA);
-            if (j == 2) 
-            {
-              cccConverted[2] = map(ccc[j].getValue(),0,127,1,7);
-              GeneralPrinter = CompType[cccConverted[2]-1] + CompText2scale[j];  
-            }
-            else
-            {
-            if (j == 3) cccConverted[j] = fscale(0,127,-20,50,ccc[j].getValue(),-1);
-            if (j == 4) cccConverted[j] = map(ccc[j].getValue(),0,127,0,10);
-            if (j == 5) cccConverted[j] = map(ccc[j].getValue(),0,127,0,100);
-            if (j == 7) cccConverted[j] = fscale(0,127,-100,6,ccc[j].getValue(),logCurveDb);
-            if (j == 8) cccConverted[j] = fscale(0,127,-80,6,ccc[j].getValue(),logCurveDb);
-            if (j == 9) cccConverted[j] = fscale(0,127,-80,6,ccc[j].getValue(),logCurveDb);
-            
-            GeneralPrinter = (String)cccConverted[j] + CompText2scale[j];
-            }
-            
-            tft.printAlignedOffseted(CompText2[j], gTextAlignTopLeft, 0, 24, gTextEraseFullLine);
-            tft.printAlignedOffseted(GeneralPrinter, gTextAlignTopLeft, 200, 24, gTextEraseToEOL); 
-          }
-       */
-      }    
-   oldcccc[j] = cccc[j].getValue();
+          
+     }    
+   oldccc[j] = ccc[j].getValue();
   }
+  */
 }
 if (modechange==0) // UPDATE VALUES FOR EQUALIZER
 {
@@ -278,6 +240,32 @@ if (modechange==0) // UPDATE VALUES FOR EQUALIZER
     oldcc[i] = cc[i].getValue();
   }
 }
+if (modechange==2) // UPDATE VALUES FOR SMART
+{
+  for (int j=0;j<8;j++)
+  {
+    if (cccc[j].getValue() != oldcccc[j])
+    {
+        if (j >= 4) smartColour = PINK;
+        else smartColour = CYAN;
+        tft.setTextColor(smartColour); 
+
+    const char *text1 = trackName.getText() + (7 * j);
+        char buffer1[7];
+        strncpy(buffer1, text1, 6);
+        buffer1[6] = '\0';
+    tft.printAlignedOffseted(buffer1, gTextAlignTopLeft, 0, 24, gTextEraseFullLine);
+
+    const char *text2 = trackName.getText() + (7 * j) + 56;
+        char buffer2[7];
+        strncpy(buffer2, text2, 6);
+        buffer2[6] = '\0';
+    tft.printAlignedOffseted(buffer2, gTextAlignTopLeft, 85, 24);    
+    }
+    oldcccc[j]= cccc[j].getValue();
+  }  
+}
+  
   tft.setTextScale(1);
   tft.setTextColor(WHITE); 
 }
@@ -423,35 +411,16 @@ void EqView()
     }
 }
 
-/*
-void CompView()
-{  
-  for (int j=2; j<6; j++)
-    {        
-      if (ccc[j].getValue() != oldccc[j])
-      {  if (ccMode[j] == 0) 
-        {
-          if (ccc[j].getValue() < oldccc[j]) tft.fillArc(xPos[j],yPos[j], circleSize+12, 8, ccc[j].getValue(), 0, BLACK);
-          if (ccc[j].getValue() > oldccc[j]) tft.fillArc(xPos[j],yPos[j], circleSize+12, 8, 0, ccc[j].getValue(), CYAN);                
-        }
-        if (ccMode[j] == 1) 
-        {
-          if (ccc[j].getValue() < oldccc[j]) tft.fillArc(xPos[j],yPos[j], circleSize, 8, ccc[j].getValue(), 0, BLACK);
-          if (ccc[j].getValue() > oldccc[j]) tft.fillArc(xPos[j],yPos[j], circleSize, 8, 0, ccc[j].getValue(), MAGENTA);
-        } 
-      }    
-    }
-}*/
-
 void SmartView()
 {
   for (int j=0; j<8; j++)
     {   
      if (cccc[j].getValue() != oldcccc[j])
      { 
-        timer[j] = millis();
+        // timer[j] = millis();
         if (j >= 4) smartColour = PINK;
         else smartColour = CYAN;
+        tft.setTextColor(smartColour);
         if (ccMode[j] == 0) 
         {
           if (cccc[j].getValue() < oldcccc[j]) tft.fillArc(xxPos[j],yyPos[j], circleSize - 5, 6, cccc[j].getValue(), 0, BLACK);
@@ -462,18 +431,18 @@ void SmartView()
         strncpy(buffer1, text1, 6);
         buffer1[6] = '\0';
 
-          tft.printAt(buffer1, xxPos[j]-15,yyPos[j]-30);
+          tft.printAt(buffer1, xxPos[j]-15,yyPos[j]-28);
 
         const char *text2 = trackName.getText() + (7 * j) + 56;
         char buffer2[7];
         strncpy(buffer2, text2, 6);
         buffer2[6] = '\0';
 
-          tft.printAt(buffer2,xxPos[j]-15,yyPos[j]+30);
+          tft.printAt(buffer2,xxPos[j]-15,yyPos[j]+25);
         
         }    
       } 
-      oldcccc[j] = cccc[j].getValue();   
+      // oldcccc[j] = cccc[j].getValue();   
     }
 }
 
