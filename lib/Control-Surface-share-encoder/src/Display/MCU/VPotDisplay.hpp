@@ -1,4 +1,4 @@
-#pragma once
+  #pragma once
 
 #include <Display/DisplayElement.hpp>
 #include <Display/DisplayInterface.hpp>

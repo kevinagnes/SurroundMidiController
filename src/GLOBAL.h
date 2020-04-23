@@ -126,10 +126,11 @@ String EQText1[8] = {"HPF"," LS"," P1"," P2"," P3"," P4"," HS","LPF"},
 
 byte oldcc[10],          // EQ      Mode
      oldccc[10],         // GENERAL Mode
-     oldcccc[10],        // SMART   Mode
      oldSurroundJoy[2], 
      oldccmuxTransport[6],
      oldccmuxChannel[6];
+
+uint8_t oldcccc[10];      // SMART   Mode     
 
 /*
 #if debugging==true

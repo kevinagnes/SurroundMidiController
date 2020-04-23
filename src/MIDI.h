@@ -2,16 +2,15 @@ USBMIDI_Interface midi;
 
 CD74HC4067 mux = {2, {A4, A5, A6, A7}}; // Multiplexer 4067 {SIGpin, {S0,S1,S2,S3}}
 
-PanJoystick joystickSurround = {{A1, A0}, mux.pin(3), CHANNEL_1}; // Surround Panner Joystick { {X,Y} , Activate Button No, Channel}
+PanJoystick joystickSurround = {{A1, A0}, mux.pin(3), CHANNEL_10}; // Surround Panner Joystick { {X,Y} , Activate Button No, Channel}
 ArrowJoystick vPOTstick = {{A1, A0}, mux.pin(6), mux.pin(3), mux.pin(10), CHANNEL_6}; 
 
-CCValue SurroundJoy[2] = { {MCU::V_POT_1},
-                           {MCU::V_POT_2} };
-/*
-Bank<1> oneBank(2);
-Bankable::CCValue<1> SurroundJoy[2] = { {{oneBank, BankType::CHANGE_CHANNEL}, {MCU::V_POT_1, CHANNEL_1}},
-                                     {{oneBank, BankType::CHANGE_CHANNEL}, {MCU::V_POT_2, CHANNEL_1}} };
-*/
+Bank<1> SurroundBank(2);
+Bankable::CCValue<1> SurroundJoy[2] = { 
+  {{SurroundBank,BankType::CHANGE_CHANNEL},{MCU::V_POT_1, CHANNEL_10}},
+  {{SurroundBank,BankType::CHANGE_CHANNEL},{MCU::V_POT_2, CHANNEL_10}}, 
+};
+
 
 
 
@@ -58,7 +57,7 @@ Encoder enc0(23,22),
         
 Bankable::BorrowedCCRotaryEncoder encEQ[10] = 
 {
-  {{bank[0], BankType::CHANGE_ADDRESS},enc0, {ccEnc[0],CHANNEL_1}, 2, 4,}, // Low Cut    (Freq,Gain,Q,OnOff)
+  {{bank[0], BankType::CHANGE_ADDRESS},enc0, {ccEnc[0],CHANNEL_9}, 2, 4,}, // Low Cut    (Freq,Gain,Q,OnOff)
   {{bank[1], BankType::CHANGE_ADDRESS},enc1, {ccEnc[1],CHANNEL_1}, 2, 4,}, // Low Shelf  (Freq,Gain,Q,OnOff)
   {{bank[2], BankType::CHANGE_ADDRESS},enc2, {ccEnc[2],CHANNEL_1}, 2, 4,}, // Peak 1     (Freq,Gain,Q,OnOff)
   {{bank[3], BankType::CHANGE_ADDRESS},enc3, {ccEnc[3],CHANNEL_1}, 2, 4,}, // Peak 2     (Freq,Gain,Q,OnOff)
@@ -86,21 +85,21 @@ Bankable::BorrowedCCRotaryEncoder encGENERAL[10] =
 
 Bankable::BorrowedCCRotaryEncoder encSMART[10] = 
 {
-  {{bank[0], BankType::CHANGE_CHANNEL}, enc0, {1,  CHANNEL_5}, 2, 4,},
-  {{bank[1], BankType::CHANGE_CHANNEL}, enc1, {2,  CHANNEL_5}, 2, 4,},
-  {{bank[2], BankType::CHANGE_CHANNEL}, enc2, {3,  CHANNEL_5}, 2, 4,},
-  {{bank[3], BankType::CHANGE_CHANNEL}, enc3, {4,  CHANNEL_5}, 2, 4,},
-  {{bank[4], BankType::CHANGE_CHANNEL}, enc4, {5,  CHANNEL_5}, 2, 4,},
-  {{bank[5], BankType::CHANGE_CHANNEL}, enc5, {6,  CHANNEL_5}, 2, 4,},
-  {{bank[6], BankType::CHANGE_CHANNEL}, enc6, {7,  CHANNEL_5}, 2, 4,},
-  {{bank[7], BankType::CHANGE_CHANNEL}, enc7, {8,  CHANNEL_5}, 2, 4,},
-  {{bank[8], BankType::CHANGE_CHANNEL}, enc8, {9,  CHANNEL_5}, 2, 4,},
-  {{bank[9], BankType::CHANGE_CHANNEL}, enc9, {10, CHANNEL_5}, 2, 4,},   
+  {{bank[0], BankType::CHANGE_CHANNEL}, enc0, {MCU::V_POT_1,  CHANNEL_1}, 2, 4,},
+  {{bank[1], BankType::CHANGE_CHANNEL}, enc1, {MCU::V_POT_2,  CHANNEL_1}, 2, 4,},
+  {{bank[2], BankType::CHANGE_CHANNEL}, enc2, {MCU::V_POT_3,  CHANNEL_1}, 2, 4,},
+  {{bank[3], BankType::CHANGE_CHANNEL}, enc3, {MCU::V_POT_4,  CHANNEL_1}, 2, 4,},
+  {{bank[4], BankType::CHANGE_CHANNEL}, enc4, {MCU::V_POT_5,  CHANNEL_1}, 2, 4,},
+  {{bank[5], BankType::CHANGE_CHANNEL}, enc5, {MCU::V_POT_6,  CHANNEL_1}, 2, 4,},
+  {{bank[6], BankType::CHANGE_CHANNEL}, enc6, {MCU::V_POT_7,  CHANNEL_1}, 2, 4,},
+  {{bank[7], BankType::CHANGE_CHANNEL}, enc7, {MCU::V_POT_8,  CHANNEL_1}, 2, 4,},
+  {{bank[8], BankType::CHANGE_CHANNEL}, enc8, {           9,  CHANNEL_5}, 2, 4,},
+  {{bank[9], BankType::CHANGE_CHANNEL}, enc9, {          10,  CHANNEL_5}, 2, 4,},   
 };
 
 Bankable::CCValue<4> cc[10] =
 {
-  {{bank[0], BankType::CHANGE_ADDRESS}, {ccEnc[0], CHANNEL_1}},
+  {{bank[0], BankType::CHANGE_ADDRESS}, {ccEnc[0], CHANNEL_9}},
   {{bank[1], BankType::CHANGE_ADDRESS}, {ccEnc[1], CHANNEL_1}},
   {{bank[2], BankType::CHANGE_ADDRESS}, {ccEnc[2], CHANNEL_1}},
   {{bank[3], BankType::CHANGE_ADDRESS}, {ccEnc[3], CHANNEL_1}},
@@ -126,19 +125,47 @@ Bankable::CCValue<4> ccc[10] =
   {{bank[9], BankType::CHANGE_CHANNEL}, {10, CHANNEL_1}},   
 };
 
-Bankable::CCValue<4> cccc[10] = 
+MCU::VPotRing cccc[8] = 
 {
-  {{bank[0], BankType::CHANGE_CHANNEL}, {1,  CHANNEL_5}},
-  {{bank[1], BankType::CHANGE_CHANNEL}, {2,  CHANNEL_5}},
-  {{bank[2], BankType::CHANGE_CHANNEL}, {3,  CHANNEL_5}},
-  {{bank[3], BankType::CHANGE_CHANNEL}, {4,  CHANNEL_5}},
-  {{bank[4], BankType::CHANGE_CHANNEL}, {5,  CHANNEL_5}},
-  {{bank[5], BankType::CHANGE_CHANNEL}, {6,  CHANNEL_5}},
-  {{bank[6], BankType::CHANGE_CHANNEL}, {7,  CHANNEL_5}},
-  {{bank[7], BankType::CHANGE_CHANNEL}, {8,  CHANNEL_5}},
-  {{bank[8], BankType::CHANGE_CHANNEL}, {9,  CHANNEL_5}},
-  {{bank[9], BankType::CHANGE_CHANNEL}, {10, CHANNEL_5}},  
-};
+  {1,  CHANNEL_1},
+  {2,  CHANNEL_1},
+  {3,  CHANNEL_1},
+  {4,  CHANNEL_1},
+  {5,  CHANNEL_1},
+  {6,  CHANNEL_1},
+  {7,  CHANNEL_1},
+  {8,  CHANNEL_1}, 
+}; 
+
+/*
+MCU::VPotRing cccc[8] = 
+{
+  {MCU::V_POT_1,  CHANNEL_1},
+  {MCU::V_POT_2,  CHANNEL_1},
+  {MCU::V_POT_3,  CHANNEL_1},
+  {MCU::V_POT_4,  CHANNEL_1},
+  {MCU::V_POT_5,  CHANNEL_1},
+  {MCU::V_POT_6,  CHANNEL_1},
+  {MCU::V_POT_7,  CHANNEL_1},
+  {MCU::V_POT_8,  CHANNEL_1}, 
+}; 
+*/
+
+/*
+{
+  {{bank[0], BankType::CHANGE_CHANNEL}, {MCU::V_POT_1,  CHANNEL_1}},
+  {{bank[1], BankType::CHANGE_CHANNEL}, {MCU::V_POT_2,  CHANNEL_1}},
+  {{bank[2], BankType::CHANGE_CHANNEL}, {MCU::V_POT_3,  CHANNEL_1}},
+  {{bank[3], BankType::CHANGE_CHANNEL}, {MCU::V_POT_4,  CHANNEL_1}},
+  {{bank[4], BankType::CHANGE_CHANNEL}, {MCU::V_POT_5,  CHANNEL_1}},
+  {{bank[5], BankType::CHANGE_CHANNEL}, {MCU::V_POT_6,  CHANNEL_1}},
+  {{bank[6], BankType::CHANGE_CHANNEL}, {MCU::V_POT_7,  CHANNEL_1}},
+  {{bank[7], BankType::CHANGE_CHANNEL}, {MCU::V_POT_8,  CHANNEL_1}},
+  {{bank[8], BankType::CHANGE_CHANNEL}, {           9,  CHANNEL_5}},
+  {{bank[9], BankType::CHANGE_CHANNEL}, {          10,  CHANNEL_5}},  
+}; 
+
+*/
 
 MCU::TimeDisplay timedisplay = {};
 
@@ -152,21 +179,9 @@ MCU::VU vu[] =
   {6, MCU::VUDecay::Default},
 };
 
-MCU::LCD<> trackName = {};
+// MCU::LCD<> trackName = {};
+MCU::LCD<> parametersNameValue = {};
 
-
-/**
-     * @brief   Constructor.
-     * 
-     * @param   display 
-     * @param   lcd 
-     * @param   bank 
-     * @param   track 
-     *          The track number to display [1, 8].
-     * @param   loc 
-     * @param   textSize 
-     * @param   color 
-     */
 
 Bankable::CCValue<1> ccmuxTransport[6] = 
 {
