@@ -49,6 +49,7 @@ Serial.begin(115200);
 #endif  
   
   Control_Surface.begin(); // Initialize tttapa's Control Surface Magic 
+
 }
 
 void programChange()
@@ -57,10 +58,10 @@ void programChange()
     if (modechange > 2 ) modechange = 0;
     
 #if NOSCREEN==0   
-    if (lcdState == 1) tftStart();
+    if (lcdState == 1) tftStart(); // Reseting the display
 #endif    
     
-    for (int r=0;r<10;r++)
+    for (int r=0;r<10;r++) // Changing Modes for the Borowed Encoders
     {
      if (encGENERAL[r].isEnabled() && modechange == 2)
      {
@@ -85,27 +86,24 @@ void programChange()
 
 void loop() {
 
-  Control_Surface.loop(); // tttapa magic sauce
-
-  midi.update();
-     
-  static uint32_t lastService = 0;
+  Control_Surface.loop(); // tttapa's magic sauce
   
-  for (int i=0;i<10;i++)
+
+  static uint32_t lastService = 0;
+  for (int i=0;i<10;i++) // START BUTTONS SERVICES
   {
     if (lastService + 1000 < micros())
       {
-        b[i].service(); // START BUTTONS SERVICES
+        b[i].service(); 
       } 
   }
 
-  for (int k=0;k<10;k++)
+  for (int k=0;k<10;k++) // READ BUTTONS
   {
-    bValue[k] = b[k].getButton(); // READ BUTTONS
+    bValue[k] = b[k].getButton(); 
   }
 
-  
-  for (int j=0;j<10;j++) 
+  for (int j=0;j<10;j++) // LOGIC FOR ENCODER BUTTONS
   {
     if (bValue[j]==(ClickEncoder::Clicked)) 
     {
@@ -142,12 +140,12 @@ void loop() {
   }
 
 
-  if (Fn4.update() == Button::Rising)
+  if (Fn4.update() == Button::Rising) // BUTTON FOR CHANGING MODES
   {
      programChange();
   }
   
-#if screenShootEnable==true
+#if screenShootEnable==true  // SCREENSHOT
   if (vPOTstick.takeScreenShoot==true)
   {
     tft.screenshotToConsole();
@@ -155,19 +153,11 @@ void loop() {
   }
 #endif
 
-#if NOSCREEN==0
+#if NOSCREEN==0 // SCREEN UPDATE FUNCTION
   if (lcdState == 1) if (millis() - fpsTimer > (1000/(ScreenFrameRate*frameMultiplier)) ) ScreenUpdate();
   frameCount += 1;
 #endif 
 
-    
-/*
-#if debugging==true
-  if ((millis() - debugDelay - olddebugDelay) > 2)Serial.println("Accumulated delay: " + String(millis() - debugDelay));
-  olddebugDelay = millis() - debugDelay;
-  debugDelay = millis();
-#endif   
-*/ 
 }
  
  

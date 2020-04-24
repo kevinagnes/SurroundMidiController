@@ -84,7 +84,7 @@ newEnd, float inputValue, float curve)
   return rangedValue;
 }
 
-void TimeDisplay()
+void TimeDisplay() // TIMECODE + LCD display
 {    
     
     tft.setTextScale(3); 
@@ -144,8 +144,9 @@ void TimeDisplay()
     
 } 
 
-void firstCallEqView()
+void firstCallEqView() // EQ VIEW build
 {
+    
     for (int j=0; j<8; j++)
     {            
       bank[j].select(3);
@@ -164,16 +165,18 @@ void firstCallEqView()
     } 
 }
 
-void firstCallSmartView()
+void firstCallSmartView() // SMART VIEW build
 {
-
+    tft.setArcParams(12);
+    
     for (int j=0; j<8; j++)
     {   
 
       if (j >= 4) smartColour = PINK;
       else smartColour = CYAN;
 
-      // tft.fillArc(xxPos[j],yyPos[j], circleSize - 5, 6, 0, cccc[j].getPosition, smartColour);
+      
+      tft.fillArc(xxPos[j],yyPos[j], circleSize - 5, 6, 0, cccc[j].getPosition(), smartColour);
 
       tft.setTextColor(smartColour);
       tft.setTextScale(1);
@@ -197,14 +200,16 @@ void firstCallSmartView()
       tft.printAt(buffer1, xxPos[j]-15, yyPos[j]-28);
       tft.printAt(buffer2, xxPos[j]-15, yyPos[j]+25);
       
-    }      
+    }  
+
+    tft.setArcParams(127);    
 }  
 
-void topParametersUpdate()
+void topParametersUpdate() // UPDATE PARAMETERS AT THE TOP
 {  
   tft.setTextScale(2);
     
-if (modechange==1) // UPDATE VALUES FOR GENERAL
+if (modechange==1) // UPDATE VALUES FOR GENERAL VIEW
 {   
   /*
   for (int j=0; j<10; j++)
@@ -219,7 +224,7 @@ if (modechange==1) // UPDATE VALUES FOR GENERAL
   }
   */
 }
-if (modechange==0) // UPDATE VALUES FOR EQUALIZER
+if (modechange==0) // UPDATE VALUES FOR EQ VIEW
 {
   for (int i=0;i<8;i++)
   {
@@ -239,12 +244,12 @@ if (modechange==0) // UPDATE VALUES FOR EQUALIZER
     oldcc[i] = cc[i].getValue();
   }
 }
-if (modechange==2) // UPDATE VALUES FOR SMART
+if (modechange==2) // UPDATE VALUES FOR SMART VIEW
 {
   for (int j=0;j<8;j++)
   {
- //   if (cccc[j].getValue() != oldcccc[j])
- //   {
+    if (cccc[j].getPosition() != oldcccc[j])
+    {
         if (j >= 4) smartColour = PINK;
         else smartColour = CYAN;
         tft.setTextColor(smartColour); 
@@ -253,15 +258,14 @@ if (modechange==2) // UPDATE VALUES FOR SMART
         char buffer1[7];
         strncpy(buffer1, text1, 6);
         buffer1[6] = '\0';
-    tft.printAlignedOffseted(buffer1, gTextAlignTopLeft, 0, 24, gTextEraseFullLine);
+    tft.printAlignedOffseted(buffer1, gTextAlignTopLeft, 0, 24);
 
     const char *text2 = parametersNameValue.getText() + (7 * j) + 56;
         char buffer2[7];
         strncpy(buffer2, text2, 6);
         buffer2[6] = '\0';
     tft.printAlignedOffseted(buffer2, gTextAlignTopLeft, 85, 24);    
-//    }
-    
+    }
   }  
 }
   
@@ -386,18 +390,15 @@ void EqView()
 
 void SmartView()
 {
+  tft.setArcParams(12);
   for (int j=0; j<8; j++)
     {   
-  //   if (cccc[j].getPosition != oldcccc[j])
-  //   { 
-        // timer[j] = millis();
         if (j >= 4) smartColour = PINK;
         else smartColour = CYAN;
         tft.setTextColor(smartColour);
-        if (ccMode[j] == 0) 
-        {
-  //        if (vpots[j].getPosition() < oldcccc[j]) tft.fillArc(xxPos[j],yyPos[j], circleSize - 5, 6, cccc[j].getValue(), 0, BLACK);
-  //        if (cccc[j].update > oldcccc[j]) tft.fillArc(xxPos[j],yyPos[j], circleSize - 5, 6, 0, cccc[j].getValue(), smartColour);      
+
+         if (cccc[j].getPosition() < oldcccc[j]) tft.fillArc(xxPos[j],yyPos[j], circleSize - 5, 6, cccc[j].getPosition(), 0, BLACK);
+         if (cccc[j].getPosition() > oldcccc[j]) tft.fillArc(xxPos[j],yyPos[j], circleSize - 5, 6, 0, cccc[j].getPosition(), smartColour);      
 
         const char *text1 = parametersNameValue.getText() + (7 * j);
         char buffer1[7];
@@ -411,11 +412,10 @@ void SmartView()
 
         tft.printAt(buffer1, xxPos[j]-15, yyPos[j]-28);
         tft.printAt(buffer2, xxPos[j]-15, yyPos[j]+25);
-        
-        }    
-  //   } 
-  //     oldcccc[j] = cccc[j].update;   
+
+     oldcccc[j] = cccc[j].getPosition();     
     }
+    tft.setArcParams(127);
 }
 
 void SurroundView()
