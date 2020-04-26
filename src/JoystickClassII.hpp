@@ -36,8 +36,19 @@ class ArrowJoystick : public MIDIOutputElement
 
         if (activatePin.update() == Button::Rising)  
         {
-          if (debugging==true) takeScreenShoot = !takeScreenShoot;
-          else Control_Surface.MIDI().sendCC({3, channel}, 127);
+          #if screenShootEnabled==true
+          
+          takeScreenShoot = !takeScreenShoot;
+          Serial.println("I changed the value of takeScreenShoot to: " + String(takeScreenShoot));
+
+          #endif
+
+          #if screenShootEnabled==false
+
+          Control_Surface.MIDI().sendCC({3, channel}, 127);
+          Serial.println("I sent a Midi CC: " + String(127));
+
+          #endif 
         }
 
         if (!changed)
@@ -129,5 +140,5 @@ class ArrowJoystick : public MIDIOutputElement
     unsigned long timerCheck;     
     MIDICNChannel channel;
   public:
-    bool takeScreenShoot;  
+    bool takeScreenShoot = 0;  
 };

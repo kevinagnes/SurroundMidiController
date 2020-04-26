@@ -9,8 +9,11 @@
 void setup() 
 {
   
-#if debugging==true || screenShootEnable==true 
+#if debugging==true || screenShootEnabled==true 
+
 Serial.begin(115200);
+Serial.println("Hello Bitches! I am awaken");
+
 #endif
   
   mux.begin(); // initiate Multiplexer for buttons 
@@ -43,12 +46,13 @@ Serial.begin(115200);
   tft.setAngleOffset(-180);
   tft.setFont(SystemFont5x7);
   tft.fillScreen(BLACK);
-  tft.drawLine(0,19,320,19,WHITE);
+  tft.drawLine(0,20,320,20,WHITE);
   tft.drawLine(0,211,320,211,timeCodeColour[0]);
   tftStart();
 #endif  
   
   Control_Surface.begin(); // Initialize tttapa's Control Surface Magic 
+  timerToToogleDisplay = millis(); 
 
 }
 
@@ -88,6 +92,11 @@ void loop() {
 
   Control_Surface.loop(); // tttapa's magic sauce
   
+  if (timerToToogleDisplay - millis() > 3000 && timerToToogleDisplay != 0)
+  {
+    Control_Surface.MIDI().sendCC({3, CHANNEL_6}, 127);
+    timerToToogleDisplay = 0;
+  }
 
   static uint32_t lastService = 0;
   for (int i=0;i<10;i++) // START BUTTONS SERVICES
@@ -144,19 +153,20 @@ void loop() {
   {
      programChange();
   }
-  
-#if screenShootEnable==true  // SCREENSHOT
-  if (vPOTstick.takeScreenShoot==true)
-  {
-    tft.screenshotToConsole();
-    vPOTstick.takeScreenShoot = !vPOTstick.takeScreenShoot;
-  }
-#endif
 
 #if NOSCREEN==0 // SCREEN UPDATE FUNCTION
   if (lcdState == 1) if (millis() - fpsTimer > (1000/(ScreenFrameRate*frameMultiplier)) ) ScreenUpdate();
   frameCount += 1;
 #endif 
+
+
+if (vPOTstick.takeScreenShoot==1)
+  {
+    Serial.println("Get ready for the pic: ");
+    tft.screenshotToConsole();
+    vPOTstick.takeScreenShoot = !vPOTstick.takeScreenShoot; 
+  }
+
 
 }
  

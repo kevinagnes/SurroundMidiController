@@ -30,7 +30,7 @@ Bank<4> bank0 = {1},
 
 Bank<2> sixButBank(6);
 Bank<1> sixButBank2(6);
-
+Bank<1> vPot(8);
 
 
 SwitchSelector Bselector = {sixButBank, mux.pin(8)};
@@ -83,7 +83,7 @@ Bankable::BorrowedCCRotaryEncoder encGENERAL[10] =
   {{bank[9], BankType::CHANGE_CHANNEL}, enc9, {10, CHANNEL_1}, 2, 4,},   
 };
 
-Bankable::BorrowedCCRotaryEncoder encSMART[10] = 
+Bankable::BorrowedCCRotaryEncoder encSMART[10] = // 48 - 55
 {
   {{bank[0], BankType::CHANGE_CHANNEL}, enc0, {MCU::V_POT_1,  CHANNEL_1}, 2, 4,},
   {{bank[1], BankType::CHANGE_CHANNEL}, enc1, {MCU::V_POT_2,  CHANNEL_1}, 2, 4,},
@@ -96,6 +96,8 @@ Bankable::BorrowedCCRotaryEncoder encSMART[10] =
   {{bank[8], BankType::CHANGE_CHANNEL}, enc8, {           9,  CHANNEL_5}, 2, 4,},
   {{bank[9], BankType::CHANGE_CHANNEL}, enc9, {          10,  CHANNEL_5}, 2, 4,},   
 };
+
+
 
 Bankable::CCValue<4> cc[10] =
 {
@@ -125,47 +127,8 @@ Bankable::CCValue<4> ccc[10] =
   {{bank[9], BankType::CHANGE_CHANNEL}, {10, CHANNEL_1}},   
 };
 
-MCU::VPotRing cccc[8] = 
-{
-  {1,  CHANNEL_1},
-  {2,  CHANNEL_1},
-  {3,  CHANNEL_1},
-  {4,  CHANNEL_1},
-  {5,  CHANNEL_1},
-  {6,  CHANNEL_1},
-  {7,  CHANNEL_1},
-  {8,  CHANNEL_1}, 
-}; 
+ MCU::VPotRing cccc[] = {1,2,3,4,5,6,7,8};  
 
-/*
-MCU::VPotRing cccc[8] = 
-{
-  {MCU::V_POT_1,  CHANNEL_1},
-  {MCU::V_POT_2,  CHANNEL_1},
-  {MCU::V_POT_3,  CHANNEL_1},
-  {MCU::V_POT_4,  CHANNEL_1},
-  {MCU::V_POT_5,  CHANNEL_1},
-  {MCU::V_POT_6,  CHANNEL_1},
-  {MCU::V_POT_7,  CHANNEL_1},
-  {MCU::V_POT_8,  CHANNEL_1}, 
-}; 
-*/
-
-/*
-{
-  {{bank[0], BankType::CHANGE_CHANNEL}, {MCU::V_POT_1,  CHANNEL_1}},
-  {{bank[1], BankType::CHANGE_CHANNEL}, {MCU::V_POT_2,  CHANNEL_1}},
-  {{bank[2], BankType::CHANGE_CHANNEL}, {MCU::V_POT_3,  CHANNEL_1}},
-  {{bank[3], BankType::CHANGE_CHANNEL}, {MCU::V_POT_4,  CHANNEL_1}},
-  {{bank[4], BankType::CHANGE_CHANNEL}, {MCU::V_POT_5,  CHANNEL_1}},
-  {{bank[5], BankType::CHANGE_CHANNEL}, {MCU::V_POT_6,  CHANNEL_1}},
-  {{bank[6], BankType::CHANGE_CHANNEL}, {MCU::V_POT_7,  CHANNEL_1}},
-  {{bank[7], BankType::CHANGE_CHANNEL}, {MCU::V_POT_8,  CHANNEL_1}},
-  {{bank[8], BankType::CHANGE_CHANNEL}, {           9,  CHANNEL_5}},
-  {{bank[9], BankType::CHANGE_CHANNEL}, {          10,  CHANNEL_5}},  
-}; 
-
-*/
 
 MCU::TimeDisplay timedisplay = {};
 

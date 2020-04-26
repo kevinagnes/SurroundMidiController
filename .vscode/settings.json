@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "optional": "cpp",
-        "system_error": "cpp"
-    }
+        "system_error": "cpp",
+        "string_view": "cpp"
+    },
+    "C_Cpp.dimInactiveRegions": false
 }

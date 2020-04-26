@@ -1,5 +1,5 @@
-#define debugging false
-#define screenShootEnabled false
+#define debugging true
+#define screenShootEnabled true
 #define NOSCREEN 0
 #define ScreenFrameRate 30   // Refresh rate for the screen 
 
@@ -42,6 +42,9 @@
 #define timeBackToBankZero 2000   // timer
 #define logCurveDb 8
 
+
+const static float angleSpacing = 0.4887;    
+
 unsigned long timer[10], 
               txtTimer,
               frameTimer, 
@@ -68,6 +71,7 @@ bool toggle[10],
      oldtransportToggle[6],
      EqIsOn[8],
      surroundToggle[2], 
+     toggleDisplay = 1,
      isTimecode;        
 
 uint8_t ccMode[10],
@@ -77,7 +81,7 @@ uint8_t ccMode[10],
         frameMultiplier = 1,
         modechange = 1;
         
-int soloColour[6], peakValue[6], cccConverted[10];
+int soloColour[6], peakValue[6], cccConverted[10], timerToToogleDisplay;
 
 const uint16_t xPos[8]  = { 35, 55, 120, 120, 190, 190, 260, 285},
                yPos[8]  = {180, 110, 80, 170,  80, 170, 110, 180},
@@ -101,7 +105,11 @@ uint16_t vuColor[6] = {GREEN,GREEN,GREEN,GREEN,GREEN,GREEN},
          TRANSPORT_COLOUR = ORANGE,
          timeCodeColour[3] = {ORANGE,WHITE,RED},
          peak[6],
-         newPeak[6];
+         newPeak[6],
+         radius = 15, 
+         innerRadius = 12;
+
+        
          
 float vuValue[6];
 
@@ -118,11 +126,16 @@ String EQText1[8] = {"HPF"," LS"," P1"," P2"," P3"," P4"," HS","LPF"},
        tDisplay,
        blankTxt = "       ",
        timerToDisplay, 
-       GeneralPrinter;
+       GeneralPrinter,
+       Storedbuffer1[8],
+       oldStoredbuffer2[8],
+       Storedbuffer2[8],
+       StoredTrackName;
 
   char barStr[6], 
        beatStr[3],
        frameStr[4];
+
 
 byte oldcc[10],          // EQ      Mode
      oldccc[10],         // GENERAL Mode
