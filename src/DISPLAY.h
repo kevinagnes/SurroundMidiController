@@ -1,6 +1,8 @@
  
 ILI9341_due tft = ILI9341_due(TFT_CS, TFT_DC, TFT_RST);
 
+/////////////////////////////////////////////////////////////////////////////////////////
+// METODS: //////////////////////////////////////////////////////////////////////////////
 float mapLog(float value, float start1, float stop1, float start2, float stop2) 
 {
     start2 = log(start2);
@@ -8,7 +10,6 @@ float mapLog(float value, float start1, float stop1, float start2, float stop2)
     float outgoing = exp(start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1)));
     return outgoing;
 }
-
 float fscale( float originalMin, float originalMax, float newBegin, float
 newEnd, float inputValue, float curve)
 {
@@ -83,11 +84,17 @@ newEnd, float inputValue, float curve)
 
   return rangedValue;
 }
+void setTextSizeAndColor(uint8_t size, uint16_t colour)
+{
+  tft.setTextScale(size);
+  tft.setTextColor(colour);
+}
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 
-void TimeDisplay() // TIMECODE + LCD display
+void TimeDisplay() //////////////////////////////// TIMECODE + LCD display
 {    
     
-    tft.setTextScale(3); 
     timedisplay.getBars(barStr);
     timedisplay.getBeats(beatStr);
     timedisplay.getFrames(frameStr);
@@ -98,14 +105,12 @@ void TimeDisplay() // TIMECODE + LCD display
 
     if (isDigit(barStr[0])) 
     {
-      tft.setTextScale(2); 
-      tft.setTextColor(timeCodeColour[0]);
+      setTextSizeAndColor(2,timeCodeColour[0]);
       tft.printAlignedOffseted("TC ", gTextAlignBottomLeft, 0, -2); 
        
       if (isTimecode == true) 
       {
-        tft.setTextScale(3);
-        tft.setTextColor(timeCodeColour[0]);
+        setTextSizeAndColor(3,timeCodeColour[0]);
         tft.printAlignedOffseted(timerToDisplay, gTextAlignBottomCenter, 0, 0);
 
         if (toggleDisplay==0)
@@ -115,10 +120,9 @@ void TimeDisplay() // TIMECODE + LCD display
           strncpy(buffer3, text3, 55);
           StoredTrackName = buffer3; 
         } 
-          
-        tft.setTextScale(2); 
-        tft.setTextColor(WHITE); 
-        tft.printAlignedOffseted(StoredTrackName, gTextAlignTopLeft, -64, 0); // MCU DISPLAY Track Name
+        
+        setTextSizeAndColor(2,WHITE);
+        tft.printAlignedOffseted(StoredTrackName, gTextAlignTopLeft, 0, 0); // MCU DISPLAY Track Name
       } 
       
       else 
@@ -132,8 +136,7 @@ void TimeDisplay() // TIMECODE + LCD display
     {
       if (isTimecode == false) 
       {
-        tft.setTextScale(2); 
-        tft.setTextColor(timeCodeColour[1]);
+        setTextSizeAndColor(2,timeCodeColour[1]);
         tft.printAlignedOffseted("OFF", gTextAlignBottomLeft, 0, -2);
         tft.printAlignedOffseted(parametersNameValue.getText(), gTextAlignTopLeft, 0, 0); // MCU DISPLAY Normal
         tft.setTextScale(3);
@@ -147,13 +150,41 @@ void TimeDisplay() // TIMECODE + LCD display
         tft.printAlignedOffseted("             ", gTextAlignBottomCenter, 0, 0); 
         isTimecode = false;
       }
-    }
-
-    tft.setTextScale(1);
-    
+    }   
 } 
 
-void firstCallEqView() // EQ VIEW build
+void transportIcons() ///////////////////////////// TRANSPORT UPDATE
+{
+  for (int i = 1; i<6; i++)
+    {
+      if (ccmuxTransport[i].getValue() !=oldccmuxTransport[i])
+          {         
+            if (ccmuxTransport[i].getValue() == 127) transportToggle[i] = 1;
+            if (ccmuxTransport[i].getValue() == 0)   transportToggle[i] = 0;
+          }
+
+          oldccmuxTransport[i] = ccmuxTransport[i].getValue(); 
+          
+          if (transportToggle[i] != oldtransportToggle[i])
+          {
+            tft.fillRect(290,219,30,20,BLACK); // Eraser
+            
+            
+            if (transportToggle[1] == 1) 
+            {
+              tft.drawCircle(310,230,2,TRANSPORT_COLOUR); // LOOP
+              tft.drawCircle(314,230,2,TRANSPORT_COLOUR); // LOOP
+            }
+            if (transportToggle[4] == 1) tft.fillRect(288,222,16,16,TRANSPORT_COLOUR); // STOP
+            if (transportToggle[5] == 1) tft.fillTriangle(288,238,288,222,304,230,TRANSPORT_COLOUR); // PLAY
+            // if (transportToggle[0] == 1) tft.printAt("M",308,230);
+          }
+
+          oldtransportToggle[i] = transportToggle[i];      
+    }
+}
+
+void firstCallEqView() //////////////////////////// EQ VIEW build
 {
     for (int j=0; j<8; j++)
     {            
@@ -173,24 +204,23 @@ void firstCallEqView() // EQ VIEW build
     } 
 }
 
-void firstCallSmartView() // SMART VIEW build
+void firstCallSmartView() ///////////////////////// SMART VIEW build
 {
     tft.setArcParams(11);
     for (int j=0; j<8; j++)
     {   
       if (j >= 4) {smartColour = PINK;}
       else        {smartColour = CYAN;} 
-      tft.fillCircle(xxPos[j],yyPos[j], circleSize - 10, smartColour);
+      tft.fillCircle(xxPos[j],yyPos[j], circleSize - 15, smartColour);
       tft.fillArc(xxPos[j],yyPos[j], circleSize - 5, 6, 0, cccc[j].getPosition(), smartColour);     
     }  
      tft.setArcParams(127);    
 }  
 
-
-
-void topParametersUpdate() // UPDATE PARAMETERS AT THE TOP
+void topParametersUpdate() //////////////////////// UPDATE PARAMETERS AT THE TOP
 {  
-  tft.setTextScale(2);
+ tft.setTextScale(2);
+
  for (int i=0;i<8;i++)
  {
   if (modechange==1) // UPDATE VALUES FOR GENERAL VIEW
@@ -203,8 +233,6 @@ void topParametersUpdate() // UPDATE PARAMETERS AT THE TOP
     {
       if (EqIsOn[i] == true)  tft.setTextColor(GREEN);
       if (EqIsOn[i] == false) tft.setTextColor(RED);
-        
-      // tft.printAlignedOffseted(EQText1[i], gTextAlignTopLeft, 0, 24, gTextEraseFullLine);
       if (ccMode[i] == 0) GeneralPrinter = EQText2[0] + ": " + EqFreqToPrint[i];
       if (ccMode[i] == 1) GeneralPrinter = EQText2[1] + ": " +  EqGainToPrint[i];
       if (ccMode[i] == 2) GeneralPrinter = EQText2[2] + ": " +  EqQToPrint[i];
@@ -228,21 +256,19 @@ void topParametersUpdate() // UPDATE PARAMETERS AT THE TOP
  } 
 }
 
-
-void VolumeView() // VOLUME UPDATE
+void VolumeView() ///////////////////////////////// VOLUME MODE UPDATE
 {     
     for (int i=0; i<6; i++)
     {
-      tft.setTextScale(2); 
-      if (ccmuxChannel[i].getValue() == 127) tft.setTextColor(RED);
-      else tft.setTextColor(WHITE);                        
+      if (ccmuxChannel[i].getValue() == 127) setTextSizeAndColor(2,RED);
+      else                                   setTextSizeAndColor(2,WHITE); 
+
       tft.printAt(vuNames[i], vunameXpos[i], 192); 
           
       
       if (vuValue[i] != vu[i].getValue())
       {               
-          tft.setTextScale(1);
-          tft.setTextColor(WHITE);
+          setTextSizeAndColor(1,WHITE);
           
           peakValue[i] = map(vu[i].getValue(),0.0,12.0,-100.0,12.0);
 
@@ -263,7 +289,6 @@ void VolumeView() // VOLUME UPDATE
             if (peakValue[i] >= 0) tft.printAt("Peak", vuXpos[i], 47);
             else tft.printAt((String)peakValue[i], vuXpos[i], 47);
           }
-          tft.setTextColor(WHITE);
       }
      
       vuValue[i] = vu[i].getValue();  
@@ -285,47 +310,15 @@ void VolumeView() // VOLUME UPDATE
    
 }
 
-void SmartView() // SMART UPDATE
+void SmartView() ////////////////////////////////// SMART MODE UPDATE
 {
-  /*
-  for (int j=0; j<8; j++)
-  { 
-    if (j >= 4) smartColour = PINK;
-    else        smartColour = CYAN;
-
-    tft.drawCircle(xxPos[j], yyPos[j], radius, smartColour);
-
-    if (cccc[j].getCenterLed()) tft.fillCircle(xxPos[j], yyPos[j], innerRadius / 4, smartColour);
-    else tft.drawCircle(xxPos[j], yyPos[j], innerRadius / 4, smartColour);
-
-    uint8_t startOn = cccc[j].getStartOn();
-    uint8_t startOff = cccc[j].getStartOff();
-    
-    for (uint8_t segment = startOn; segment < startOff; segment++)
-    {
-      // segment 5 (i.e. the sixth segment) = 0° (i.e. 12 o'clock)
-        float angle = angleSpacing * (segment - 5);
-
-        // TODO: use Bresenham directly
-
-        uint16_t x_start = xxPos[j] + round((float)innerRadius * sin(angle) / 2);
-        uint16_t y_start = yyPos[j] - round((float)innerRadius * cos(angle) / 2);
-
-        uint16_t x_end = xxPos[j] + round((float)innerRadius * sin(angle));
-        uint16_t y_end = yyPos[j] - round((float)innerRadius * cos(angle));
-
-        tft.drawLine(x_start, y_start, x_end, y_end, smartColour);
-    }       
-  }
-  */
-  
   tft.setArcParams(11);
 
   for (int j=0; j<8; j++)
     {   
       if (j >= 4) smartColour = PINK;
       else smartColour = CYAN;
-      tft.setTextColor(smartColour);
+      setTextSizeAndColor(1,smartColour);
 
         const char *text1 = parametersNameValue.getText() + (7 * j);
         char buffer1[7];
@@ -357,10 +350,10 @@ void SmartView() // SMART UPDATE
     tft.setArcParams(127); 
 }
 
-void EqView() // EQ UPDATE
+void EqView() ///////////////////////////////////// EQ MODE UPDATE
 {  
- tft.setTextScale(1);
- tft.setTextColor(WHITE); 
+ 
+ setTextSizeAndColor(1,WHITE);
   
  for (int j=0; j<8; j++)
     {   
@@ -416,7 +409,7 @@ void EqView() // EQ UPDATE
     }
 }
 
-void SurroundView() // SURROUND PANING UPDATE
+void SurroundView() /////////////////////////////// SURROUND MODE UPDATE
 {
 
   if (joystickSurround.changed)
@@ -426,13 +419,12 @@ void SurroundView() // SURROUND PANING UPDATE
    
     for (int j=0;j<2;j++)
     {
-      tft.setTextScale(1);
-      tft.setTextColor(GREYGREEN);
+
+      setTextSizeAndColor(1,GREYGREEN);
       tft.printAt("Diversity: ", 220, 140, gTextEraseToEOL);
       tft.setTextScale(2);
       tft.printAt(String(joystickSurround.diversity),220,150,gTextEraseToEOL);
-      tft.setTextScale(1);
-      tft.setTextColor(PINK);
+      setTextSizeAndColor(1,PINK);
       tft.printAt("Angle: ", 220, 100, gTextEraseToEOL);
       tft.setTextScale(2);
       tft.printAt(String((joystickSurround.angleDeg*4068)/71), 220, 110, gTextEraseToEOL); 
@@ -441,38 +433,7 @@ void SurroundView() // SURROUND PANING UPDATE
   } 
 }
 
-void transportIcons()
-{
-  for (int i = 1; i<6; i++)
-    {
-      if (ccmuxTransport[i].getValue() !=oldccmuxTransport[i])
-          {         
-            if (ccmuxTransport[i].getValue() == 127) transportToggle[i] = 1;
-            if (ccmuxTransport[i].getValue() == 0)   transportToggle[i] = 0;
-          }
-
-          oldccmuxTransport[i] = ccmuxTransport[i].getValue(); 
-          
-          if (transportToggle[i] != oldtransportToggle[i])
-          {
-            tft.fillRect(290,219,30,20,BLACK); // Eraser
-            
-            
-            if (transportToggle[1] == 1) 
-            {
-              tft.drawCircle(310,230,2,TRANSPORT_COLOUR); // LOOP
-              tft.drawCircle(314,230,2,TRANSPORT_COLOUR); // LOOP
-            }
-            if (transportToggle[4] == 1) tft.fillRect(288,222,16,16,TRANSPORT_COLOUR); // STOP
-            if (transportToggle[5] == 1) tft.fillTriangle(288,238,288,222,304,230,TRANSPORT_COLOUR); // PLAY
-            // if (transportToggle[0] == 1) tft.printAt("M",308,230);
-          }
-
-          oldtransportToggle[i] = transportToggle[i];      
-    }
-}
-
-void tftStart()
+void tftStart() /////////////////////////////////// SCREEN START AND RESET
 { 
 
      tft.fillRect(0,40,320,167,BLACK); // reset middle
@@ -513,16 +474,13 @@ void tftStart()
     transportIcons();  
 }
 
-void checkForJoystick()
+void CheckForJoystick() /////////////////////////// LOOK FOR JOYSTICK
 {
    if (digitalRead(joystickSurround.buttonPin) == LOW && surroundToggle[1] == 0) 
   {
     surroundToggle[0] = 1;
     tft.fillRect(0,40,320,167,BLACK); // reset middle screen
-
-    // tft.drawRect( 96, 66, 130, 130, BLUE);
     surroundToggle[1] = !surroundToggle[1];
-
   }
   
   if (digitalRead(joystickSurround.buttonPin) == HIGH && surroundToggle[0] == 1) 
@@ -533,23 +491,8 @@ void checkForJoystick()
   }
 }
 
-void ShowFramesPerSecond()
-{
-   if (millis() - frameTimer >999) 
-   {
-     tft.setTextScale(1);
-     tft.setTextColor(WHITE);
-     tft.printAt(String(frameCount),300,5, gTextEraseFullLine);
-     frameCount = 0;
-     frameTimer = millis();
-   }
-}
-
-void ScreenUpdate()
+void ScreenUpdate() /////////////////////////////// MAIN UPDATE
 { 
-   // ShowFramesPerSecond();
-
-   
    if (surroundToggle[0] == 1 && surroundToggle[1] == 1) 
     {
       frameMultiplier = 6;
@@ -563,26 +506,13 @@ void ScreenUpdate()
       TimeDisplay();
       transportIcons();
    
-      if (modechange==0) 
-      {
-        EqView();
-      }
-   
-      if (modechange==1) 
-      {
-        VolumeView(); 
-      }
+      if (modechange==0) EqView();
+      if (modechange==1) VolumeView(); 
+      if (modechange==2) SmartView(); 
 
-      if (modechange==2) 
-      {
-        SmartView(); 
-      }
-
-     topParametersUpdate();
+      topParametersUpdate();
    }
-
-   checkForJoystick();
-  
+  CheckForJoystick();
   fpsTimer = millis();
 
 }  

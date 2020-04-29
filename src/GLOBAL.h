@@ -1,5 +1,5 @@
-#define debugging true
-#define screenShootEnabled true
+#define debugging false  
+#define screenShootEnabled false
 #define NOSCREEN 0
 #define ScreenFrameRate 30   // Refresh rate for the screen 
 
@@ -39,7 +39,7 @@
 // ENCODER
 #define speedMultiplier 1         // encoder rotation speed
 #define encoderType 4             // type of encoder
-#define timeBackToBankZero 2000   // timer
+#define timeBackToBankZero 1000   // timer
 #define logCurveDb 8
 
 
@@ -52,6 +52,7 @@ unsigned long timer[10],
               previousDecay[6],
               decayTime[6],
               fpsTimer;
+              
                  
 const byte ccEnc[10] = {20,24,28,52,56,60,85,102,106,110},  // CC messages
            bEnc[10]  = {43,42,45,44,47,46,49,48,51,50},     // Button Pins
@@ -72,7 +73,8 @@ bool toggle[10],
      EqIsOn[8],
      surroundToggle[2], 
      toggleDisplay = 1,
-     isTimecode;        
+     isTimecode,
+     timerToToogleDisplay = 1;        
 
 uint8_t ccMode[10],
         blockheight = 8, //8
@@ -81,7 +83,7 @@ uint8_t ccMode[10],
         frameMultiplier = 1,
         modechange = 1;
         
-int soloColour[6], peakValue[6], cccConverted[10], timerToToogleDisplay;
+int soloColour[6], peakValue[6], cccConverted[10];
 
 const uint16_t xPos[8]  = { 35, 55, 120, 120, 190, 190, 260, 285},
                yPos[8]  = {180, 110, 80, 170,  80, 170, 110, 180},
@@ -143,7 +145,7 @@ byte oldcc[10],          // EQ      Mode
      oldccmuxTransport[6],
      oldccmuxChannel[6];
 
-uint8_t oldcccc[10];      // SMART   Mode     
+int oldcccc[10];      // SMART   Mode     
 
 /*
 #if debugging==true

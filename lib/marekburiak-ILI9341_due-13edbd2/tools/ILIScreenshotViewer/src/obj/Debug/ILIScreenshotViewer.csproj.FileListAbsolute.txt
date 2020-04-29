@@ -1,0 +1,10 @@
+/Users/kevinagnes/Documents/PlatformIO/Projects/200421-115101-due/lib/marekburiak-ILI9341_due-13edbd2/tools/ILIScreenshotViewer/src/bin/Debug/ILIScreenshotViewer.exe.config
+/Users/kevinagnes/Documents/PlatformIO/Projects/200421-115101-due/lib/marekburiak-ILI9341_due-13edbd2/tools/ILIScreenshotViewer/src/bin/Debug/ILIScreenshotViewer.exe
+/Users/kevinagnes/Documents/PlatformIO/Projects/200421-115101-due/lib/marekburiak-ILI9341_due-13edbd2/tools/ILIScreenshotViewer/src/bin/Debug/ILIScreenshotViewer.pdb
+/Users/kevinagnes/Documents/PlatformIO/Projects/200421-115101-due/lib/marekburiak-ILI9341_due-13edbd2/tools/ILIScreenshotViewer/src/obj/Debug/ILIScreenshotViewer.csprojAssemblyReference.cache
+/Users/kevinagnes/Documents/PlatformIO/Projects/200421-115101-due/lib/marekburiak-ILI9341_due-13edbd2/tools/ILIScreenshotViewer/src/obj/Debug/ILIScreenshotViewer.Form1.resources
+/Users/kevinagnes/Documents/PlatformIO/Projects/200421-115101-due/lib/marekburiak-ILI9341_due-13edbd2/tools/ILIScreenshotViewer/src/obj/Debug/ILIScreenshotViewer.Properties.Resources.resources
+/Users/kevinagnes/Documents/PlatformIO/Projects/200421-115101-due/lib/marekburiak-ILI9341_due-13edbd2/tools/ILIScreenshotViewer/src/obj/Debug/ILIScreenshotViewer.csproj.GenerateResource.cache
+/Users/kevinagnes/Documents/PlatformIO/Projects/200421-115101-due/lib/marekburiak-ILI9341_due-13edbd2/tools/ILIScreenshotViewer/src/obj/Debug/ILIScreenshotViewer.csproj.CoreCompileInputs.cache
+/Users/kevinagnes/Documents/PlatformIO/Projects/200421-115101-due/lib/marekburiak-ILI9341_due-13edbd2/tools/ILIScreenshotViewer/src/obj/Debug/ILIScreenshotViewer.exe
+/Users/kevinagnes/Documents/PlatformIO/Projects/200421-115101-due/lib/marekburiak-ILI9341_due-13edbd2/tools/ILIScreenshotViewer/src/obj/Debug/ILIScreenshotViewer.pdb

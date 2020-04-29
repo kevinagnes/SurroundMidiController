@@ -60,7 +60,7 @@ Bankable::BorrowedCCRotaryEncoder encEQ[10] =
   {{bank[0], BankType::CHANGE_ADDRESS},enc0, {ccEnc[0],CHANNEL_9}, 2, 4,}, // Low Cut    (Freq,Gain,Q,OnOff)
   {{bank[1], BankType::CHANGE_ADDRESS},enc1, {ccEnc[1],CHANNEL_1}, 2, 4,}, // Low Shelf  (Freq,Gain,Q,OnOff)
   {{bank[2], BankType::CHANGE_ADDRESS},enc2, {ccEnc[2],CHANNEL_1}, 2, 4,}, // Peak 1     (Freq,Gain,Q,OnOff)
-  {{bank[3], BankType::CHANGE_ADDRESS},enc3, {ccEnc[3],CHANNEL_1}, 2, 4,}, // Peak 2     (Freq,Gain,Q,OnOff)
+  {{bank[3], BankType::CHANGE_ADDRESS},enc3, {ccEnc[3],CHANNEL_9}, 2, 4,}, // Peak 2     (Freq,Gain,Q,OnOff)
   {{bank[4], BankType::CHANGE_ADDRESS},enc4, {ccEnc[4],CHANNEL_1}, 2, 4,}, // Peak 3     (Freq,Gain,Q,OnOff)
   {{bank[5], BankType::CHANGE_ADDRESS},enc5, {ccEnc[5],CHANNEL_1}, 2, 4,}, // Peak 4     (Freq,Gain,Q,OnOff)
   {{bank[6], BankType::CHANGE_ADDRESS},enc6, {ccEnc[6],CHANNEL_1}, 2, 4,}, // High Shelf (Freq,Gain,Q,OnOff)
@@ -104,7 +104,7 @@ Bankable::CCValue<4> cc[10] =
   {{bank[0], BankType::CHANGE_ADDRESS}, {ccEnc[0], CHANNEL_9}},
   {{bank[1], BankType::CHANGE_ADDRESS}, {ccEnc[1], CHANNEL_1}},
   {{bank[2], BankType::CHANGE_ADDRESS}, {ccEnc[2], CHANNEL_1}},
-  {{bank[3], BankType::CHANGE_ADDRESS}, {ccEnc[3], CHANNEL_1}},
+  {{bank[3], BankType::CHANGE_ADDRESS}, {ccEnc[3], CHANNEL_9}},
   {{bank[4], BankType::CHANGE_ADDRESS}, {ccEnc[4], CHANNEL_1}},
   {{bank[5], BankType::CHANGE_ADDRESS}, {ccEnc[5], CHANNEL_1}},
   {{bank[6], BankType::CHANGE_ADDRESS}, {ccEnc[6], CHANNEL_1}},
@@ -127,7 +127,17 @@ Bankable::CCValue<4> ccc[10] =
   {{bank[9], BankType::CHANGE_CHANNEL}, {10, CHANNEL_1}},   
 };
 
- MCU::VPotRing cccc[] = {1,2,3,4,5,6,7,8};  
+ MCU::VPotRing cccc[8] = 
+ {
+   { 1, CHANNEL_1},
+   { 2, CHANNEL_1},
+   { 3, CHANNEL_1},
+   { 4, CHANNEL_1},
+   { 5, CHANNEL_1},
+   { 6, CHANNEL_1},
+   { 7, CHANNEL_1},
+   { 8, CHANNEL_1}
+};  
 
 
 MCU::TimeDisplay timedisplay = {};

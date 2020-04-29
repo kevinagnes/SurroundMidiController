@@ -52,7 +52,8 @@ Serial.println("Hello Bitches! I am awaken");
 #endif  
   
   Control_Surface.begin(); // Initialize tttapa's Control Surface Magic 
-  timerToToogleDisplay = millis(); 
+
+
 
 }
 
@@ -92,11 +93,12 @@ void loop() {
 
   Control_Surface.loop(); // tttapa's magic sauce
   
-  if (timerToToogleDisplay - millis() > 3000 && timerToToogleDisplay != 0)
+  if (timerToToogleDisplay == 1)
   {
-    Control_Surface.MIDI().sendCC({3, CHANNEL_6}, 127);
-    timerToToogleDisplay = 0;
+      Control_Surface.MIDI().sendCC({3, CHANNEL_6}, 127);
+      timerToToogleDisplay = 0;
   }
+
 
   static uint32_t lastService = 0;
   for (int i=0;i<10;i++) // START BUTTONS SERVICES

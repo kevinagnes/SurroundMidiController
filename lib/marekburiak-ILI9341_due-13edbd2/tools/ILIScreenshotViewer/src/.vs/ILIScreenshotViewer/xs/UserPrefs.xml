@@ -1,0 +1,31 @@
+﻿<Properties StartupConfiguration="{AD6D4A3D-2F94-435B-836F-E617ED847F46}|Default">
+  <MonoDevelop.Ide.Workbench>
+    <Files>
+      <File FileName="App.config" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="ILIScreenshotViewer" expanded="True">
+            <Node name="ILIScreenshotViewer" expanded="True">
+              <Node name="References" expanded="True">
+                <Node name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" selected="True" />
+              </Node>
+              <Node name="Properties" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.ILIScreenshotViewer PreferredExecutionTarget="MonoDevelop.Default" />
+</Properties>
