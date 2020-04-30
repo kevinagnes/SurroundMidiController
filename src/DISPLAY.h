@@ -1,4 +1,5 @@
- 
+#include <ICONS.h>
+
 ILI9341_due tft = ILI9341_due(TFT_CS, TFT_DC, TFT_RST);
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -92,6 +93,36 @@ void setTextSizeAndColor(uint8_t size, uint16_t colour)
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
+void transportIcons() ///////////////////////////// TRANSPORT UPDATE
+{
+  for (int i = 0; i<6; i++)
+    {
+      if (ccmuxTransport[i].getValue() !=oldccmuxTransport[i])
+          {         
+            if (ccmuxTransport[i].getValue() == 127) transportToggle[i] = 1;
+            if (ccmuxTransport[i].getValue() == 0)   transportToggle[i] = 0;
+          }
+
+          oldccmuxTransport[i] = ccmuxTransport[i].getValue(); 
+          
+          if (transportToggle[i] != oldtransportToggle[i])
+          {
+            tft.fillRect(288,218,24,24,BLACK); // Eraser
+            if (transportToggle[0] == 1) TRANSPORT_COLOUR = timeCodeColour[2];
+            if (transportToggle[0] == 0) TRANSPORT_COLOUR = timeCodeColour[0];
+
+            if (transportToggle[4] == 1 && transportToggle[1] == 1 && transportToggle[0] == 0) tft.drawBitmap(stopLoopBitmaps,288,218,22,22,TRANSPORT_COLOUR);
+            if (transportToggle[4] == 1 && transportToggle[1] == 0 && transportToggle[0] == 0) tft.drawBitmap(stopBitmaps,288,218,22,22,TRANSPORT_COLOUR);
+            if (transportToggle[1] == 1 && transportToggle[1] == 1 && transportToggle[0] == 0) tft.drawBitmap(playLoopBitmaps,288,218,22,22,TRANSPORT_COLOUR);
+            if (transportToggle[5] == 1 && transportToggle[1] == 0 && transportToggle[0] == 0) tft.drawBitmap(playBitmaps,288,218,22,22,TRANSPORT_COLOUR); 
+            if (transportToggle[0] == 1 && transportToggle[1] == 1)                            tft.drawBitmap(recLoopBitmaps,288,218,22,22,TRANSPORT_COLOUR);
+            if (transportToggle[0] == 1 && transportToggle[1] == 0)                            tft.drawBitmap(recBitmaps,288,218,22,22,TRANSPORT_COLOUR);
+          }
+
+          oldtransportToggle[i] = transportToggle[i];      
+    }
+}
+
 void TimeDisplay() //////////////////////////////// TIMECODE + LCD display
 {    
     
@@ -105,12 +136,12 @@ void TimeDisplay() //////////////////////////////// TIMECODE + LCD display
 
     if (isDigit(barStr[0])) 
     {
-      setTextSizeAndColor(2,timeCodeColour[0]);
+      setTextSizeAndColor(2,TRANSPORT_COLOUR);
       tft.printAlignedOffseted("TC ", gTextAlignBottomLeft, 0, -2); 
        
       if (isTimecode == true) 
       {
-        setTextSizeAndColor(3,timeCodeColour[0]);
+        setTextSizeAndColor(3,TRANSPORT_COLOUR);
         tft.printAlignedOffseted(timerToDisplay, gTextAlignBottomCenter, 0, 0);
 
         if (toggleDisplay==0)
@@ -127,6 +158,7 @@ void TimeDisplay() //////////////////////////////// TIMECODE + LCD display
       
       else 
       {
+        setTextSizeAndColor(3,TRANSPORT_COLOUR);
         tft.printAlignedOffseted("             ", gTextAlignTopLeft, 0, 0); 
         isTimecode = true;
       }
@@ -152,37 +184,6 @@ void TimeDisplay() //////////////////////////////// TIMECODE + LCD display
       }
     }   
 } 
-
-void transportIcons() ///////////////////////////// TRANSPORT UPDATE
-{
-  for (int i = 1; i<6; i++)
-    {
-      if (ccmuxTransport[i].getValue() !=oldccmuxTransport[i])
-          {         
-            if (ccmuxTransport[i].getValue() == 127) transportToggle[i] = 1;
-            if (ccmuxTransport[i].getValue() == 0)   transportToggle[i] = 0;
-          }
-
-          oldccmuxTransport[i] = ccmuxTransport[i].getValue(); 
-          
-          if (transportToggle[i] != oldtransportToggle[i])
-          {
-            tft.fillRect(290,219,30,20,BLACK); // Eraser
-            
-            
-            if (transportToggle[1] == 1) 
-            {
-              tft.drawCircle(310,230,2,TRANSPORT_COLOUR); // LOOP
-              tft.drawCircle(314,230,2,TRANSPORT_COLOUR); // LOOP
-            }
-            if (transportToggle[4] == 1) tft.fillRect(288,222,16,16,TRANSPORT_COLOUR); // STOP
-            if (transportToggle[5] == 1) tft.fillTriangle(288,238,288,222,304,230,TRANSPORT_COLOUR); // PLAY
-            // if (transportToggle[0] == 1) tft.printAt("M",308,230);
-          }
-
-          oldtransportToggle[i] = transportToggle[i];      
-    }
-}
 
 void firstCallEqView() //////////////////////////// EQ VIEW build
 {
@@ -237,7 +238,7 @@ void topParametersUpdate() //////////////////////// UPDATE PARAMETERS AT THE TOP
       if (ccMode[i] == 1) GeneralPrinter = EQText2[1] + ": " +  EqGainToPrint[i];
       if (ccMode[i] == 2) GeneralPrinter = EQText2[2] + ": " +  EqQToPrint[i];
       if (ccMode[i] == 3) GeneralPrinter = EQText2[3] + ": " +  EqONOFFToPrint[i];
-      tft.printAlignedOffseted(EQText1[i] + " " + GeneralPrinter, gTextAlignTopLeft, 40, 24, gTextEraseFullLine);
+      tft.printAlignedOffseted(EQText1[i] + " " + GeneralPrinter, gTextAlignTopLeft, 40, 26, gTextEraseFullLine);
     }
     oldcc[i] = cc[i].getValue();
   }
@@ -249,7 +250,7 @@ void topParametersUpdate() //////////////////////// UPDATE PARAMETERS AT THE TOP
 
     if (Storedbuffer2[i] != oldStoredbuffer2[i])
     {
-    tft.printAlignedOffseted(Storedbuffer1[i] + ": " + Storedbuffer2[i], gTextAlignTopLeft, 0, 24, gTextEraseFullLine);
+    tft.printAlignedOffseted(Storedbuffer1[i] + ": " + Storedbuffer2[i], gTextAlignTopLeft, 0, 26, gTextEraseFullLine);
     }
     oldStoredbuffer2[i] = Storedbuffer2[i];
   } 
@@ -415,6 +416,13 @@ void SurroundView() /////////////////////////////// SURROUND MODE UPDATE
   if (joystickSurround.changed)
   {    
      tft.fillCircle( 120, 130, 70, PINK);
+     
+     tft.fillCircle( 79, 60, 3, CYAN); // L
+     tft.fillCircle(119, 49, 3, CYAN); // C
+     tft.fillCircle(159, 60, 3, CYAN); // R
+     tft.fillCircle( 45,158, 3, CYAN); // Ls
+     tft.fillCircle(196,158, 3, CYAN); // Rs
+     
      tft.fillCircle(joystickSurround.yy/8 + 120, -joystickSurround.xx/8 + 130,5, GREYGREEN); 
    
     for (int j=0;j<2;j++)

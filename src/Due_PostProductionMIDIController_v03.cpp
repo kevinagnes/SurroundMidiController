@@ -1,7 +1,6 @@
 #include <Arduino.h> 
 #include <GLOBAL.h> 
 #include <MIDI.h> 
-
 #if NOSCREEN==0
 #include <DISPLAY.h> 
 #endif
@@ -9,11 +8,9 @@
 void setup() 
 {
   
-#if debugging==true || screenShootEnabled==true 
-
+#if debugging==true 
 Serial.begin(115200);
 Serial.println("Hello Bitches! I am awaken");
-
 #endif
   
   mux.begin(); // initiate Multiplexer for buttons 
@@ -45,6 +42,9 @@ Serial.println("Hello Bitches! I am awaken");
   tft.setArcParams(127);
   tft.setAngleOffset(-180);
   tft.setFont(SystemFont5x7);
+  tft.fillScreen(BLACK);
+  tft.drawBitmap(hub_vetor_pbBitmaps,90,54,141,141,RED);
+  delay(8000);
   tft.fillScreen(BLACK);
   tft.drawLine(0,20,320,20,WHITE);
   tft.drawLine(0,211,320,211,timeCodeColour[0]);
@@ -99,7 +99,7 @@ void loop() {
       timerToToogleDisplay = 0;
   }
 
-
+//////
   static uint32_t lastService = 0;
   for (int i=0;i<10;i++) // START BUTTONS SERVICES
   {
@@ -133,7 +133,7 @@ void loop() {
       timerToggle[j] = 1;          
     }
     
-    if (bValue[j]==(ClickEncoder::Held))
+    if (j < 8 && bValue[j]==(ClickEncoder::Held))
     {   
       ccMode[j] = 3;
       bank[j].select(3); 
@@ -149,7 +149,7 @@ void loop() {
       timerToggle[j] = !timerToggle[j];   
     } 
   }
-
+//////
 
   if (Fn4.update() == Button::Rising) // BUTTON FOR CHANGING MODES
   {
@@ -159,16 +159,42 @@ void loop() {
 #if NOSCREEN==0 // SCREEN UPDATE FUNCTION
   if (lcdState == 1) if (millis() - fpsTimer > (1000/(ScreenFrameRate*frameMultiplier)) ) ScreenUpdate();
   frameCount += 1;
+
+  if (bValue[8]==(ClickEncoder::Held) && toggleConfirmer[0] == 0) 
+  { 
+      toggleConfirmer[1] = !toggleConfirmer[1];
+      timerToConfirmDisplayAction = millis();
+      
+      if(toggleConfirmer[0] == 0 && toggleConfirmer[1] == 1)
+      {
+        Serial.println("Get ready for the pic: ");
+        tft.screenshotToConsole();
+        toggleConfirmer[0] = !toggleConfirmer[0];
+      }
+  }
 #endif 
 
+  if (bValue[9]==(ClickEncoder::Held) && toggleConfirmer[0] == 0)  
+  {   
+    toggleConfirmer[1] = !toggleConfirmer[1];
+    timerToConfirmDisplayAction = millis();
 
-if (vPOTstick.takeScreenShoot==1)
-  {
-    Serial.println("Get ready for the pic: ");
-    tft.screenshotToConsole();
-    vPOTstick.takeScreenShoot = !vPOTstick.takeScreenShoot; 
+    if(toggleConfirmer[0] == 0 && toggleConfirmer[1] == 1)
+    {
+      sleepState = !sleepState;
+      lcdState = !lcdState;
+      tft.sleep(sleepState);
+      digitalWrite(TFT_LED,lcdState);
+      toggleConfirmer[0] = !toggleConfirmer[0];
+    }
   }
 
+
+  if (millis() - timerToConfirmDisplayAction > 1000 && toggleConfirmer[0] == 1)
+  {
+    timerToConfirmDisplayAction = 0;
+    toggleConfirmer[0] = 0;
+  }
 
 }
  

@@ -1,5 +1,4 @@
 #define debugging false  
-#define screenShootEnabled false
 #define NOSCREEN 0
 #define ScreenFrameRate 30   // Refresh rate for the screen 
 
@@ -51,7 +50,8 @@ unsigned long timer[10],
               refreshTime,
               previousDecay[6],
               decayTime[6],
-              fpsTimer;
+              fpsTimer,
+              timerToConfirmDisplayAction;
               
                  
 const byte ccEnc[10] = {20,24,28,52,56,60,85,102,106,110},  // CC messages
@@ -74,7 +74,8 @@ bool toggle[10],
      surroundToggle[2], 
      toggleDisplay = 1,
      isTimecode,
-     timerToToogleDisplay = 1;        
+     toggleConfirmer[2],
+     timerToToogleDisplay;        
 
 uint8_t ccMode[10],
         blockheight = 8, //8
