@@ -2,7 +2,7 @@
 #include <GLOBAL.h> 
 #include <MIDI.h> 
 #if NOSCREEN==0
-#include <DISPLAY.h> 
+#include <DISPLAY.h>
 #endif
 
 void setup() 
@@ -14,9 +14,10 @@ Serial.println("Hello Bitches! I am awaken");
 #endif
   
   mux.begin(); // initiate Multiplexer for buttons 
-              
+  #if NOSCREEN==0          
   pinMode(TFT_LED,OUTPUT);
   digitalWrite(TFT_LED,lcdState);
+  #endif  
   
   for (int l=0;l<10;l++)
   {
@@ -98,6 +99,7 @@ void loop() {
       Control_Surface.MIDI().sendCC({3, CHANNEL_6}, 127);
       timerToToogleDisplay = 0;
   }
+  
 
 //////
   static uint32_t lastService = 0;
@@ -148,6 +150,7 @@ void loop() {
       bank[j].select(toggle[j]);  
       timerToggle[j] = !timerToggle[j];   
     } 
+    
   }
 //////
 
@@ -161,7 +164,7 @@ void loop() {
   frameCount += 1;
 
   if (bValue[8]==(ClickEncoder::Held) && toggleConfirmer[0] == 0) 
-  { 
+  {
       toggleConfirmer[1] = !toggleConfirmer[1];
       timerToConfirmDisplayAction = millis();
       
@@ -173,29 +176,6 @@ void loop() {
       }
   }
 #endif 
-
-  if (bValue[9]==(ClickEncoder::Held) && toggleConfirmer[0] == 0)  
-  {   
-    toggleConfirmer[1] = !toggleConfirmer[1];
-    timerToConfirmDisplayAction = millis();
-
-    if(toggleConfirmer[0] == 0 && toggleConfirmer[1] == 1)
-    {
-      sleepState = !sleepState;
-      lcdState = !lcdState;
-      tft.sleep(sleepState);
-      digitalWrite(TFT_LED,lcdState);
-      toggleConfirmer[0] = !toggleConfirmer[0];
-    }
-  }
-
-
-  if (millis() - timerToConfirmDisplayAction > 1000 && toggleConfirmer[0] == 1)
-  {
-    timerToConfirmDisplayAction = 0;
-    toggleConfirmer[0] = 0;
-  }
-
 }
  
  
