@@ -1,5 +1,4 @@
 #define debugging false  
-#define screenShootEnabled false
 #define NOSCREEN 0
 #define ScreenFrameRate 30   // Refresh rate for the screen 
 
@@ -23,14 +22,14 @@
 #define TFT_LED 8 // 7
 #define BLACK           0x0000
 #define RED             0xF800
-#define GREEN           0x07E0
+#define GREEN           0x1FE3 // 0x07E0
 #define BLUE            0x001F
 #define CYAN            0x07FF
 #define MAGENTA         0xF81F
 #define YELLOW          0xFFE0 
 #define ORANGE          0xFD20
 #define GREENYELLOW     0xAFE5 
-#define DARKGREEN       0x03E0
+#define DARKGREEN       0x0180 // 0x03E0
 #define WHITE           0xFFFF
 #define PINK            0xC177
 #define GREYGREEN       0xDF1A
@@ -51,7 +50,8 @@ unsigned long timer[10],
               refreshTime,
               previousDecay[6],
               decayTime[6],
-              fpsTimer;
+              fpsTimer,
+              timerToConfirmDisplayAction;
               
                  
 const byte ccEnc[10] = {20,24,28,52,56,60,85,102,106,110},  // CC messages
@@ -74,7 +74,8 @@ bool toggle[10],
      surroundToggle[2], 
      toggleDisplay = 1,
      isTimecode,
-     timerToToogleDisplay = 1;        
+     toggleConfirmer[2],
+     timerToToogleDisplay;        
 
 uint8_t ccMode[10],
         blockheight = 8, //8

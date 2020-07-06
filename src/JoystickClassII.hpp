@@ -35,20 +35,9 @@ class ArrowJoystick : public MIDIOutputElement
         changed |= joyY.update();
 
         if (activatePin.update() == Button::Rising)  
-        {
-          #if screenShootEnabled==true
-          
-          takeScreenShoot = !takeScreenShoot;
-          Serial.println("I changed the value of takeScreenShoot to: " + String(takeScreenShoot));
-
-          #endif
-
-          #if screenShootEnabled==false
-
+        {   
           Control_Surface.MIDI().sendCC({3, channel}, 127);
           Serial.println("I sent a Midi CC: " + String(127));
-
-          #endif 
         }
 
         if (!changed)

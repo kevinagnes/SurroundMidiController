@@ -3,7 +3,7 @@
 #include <MIDI.h> 
 
 #if NOSCREEN==0
-#include <DISPLAY.h> 
+#include <DISPLAY.h>
 #endif
 
 void setup() 
@@ -17,9 +17,10 @@ Serial.println("Hello Bitches! I am awaken");
 #endif
   
   mux.begin(); // initiate Multiplexer for buttons 
-              
+  #if NOSCREEN==0          
   pinMode(TFT_LED,OUTPUT);
   digitalWrite(TFT_LED,lcdState);
+  #endif  
   
   for (int l=0;l<10;l++)
   {
@@ -45,6 +46,9 @@ Serial.println("Hello Bitches! I am awaken");
   tft.setArcParams(127);
   tft.setAngleOffset(-180);
   tft.setFont(SystemFont5x7);
+  tft.fillScreen(BLACK);
+  tft.drawBitmap(hub_vetor_pbBitmaps,90,54,141,141,RED);
+  delay(8000);
   tft.fillScreen(BLACK);
   tft.drawLine(0,20,320,20,WHITE);
   tft.drawLine(0,211,320,211,timeCodeColour[0]);
@@ -98,6 +102,7 @@ void loop() {
       Control_Surface.MIDI().sendCC({3, CHANNEL_6}, 127);
       timerToToogleDisplay = 0;
   }
+  
 
 
   static uint32_t lastService = 0;
@@ -148,6 +153,7 @@ void loop() {
       bank[j].select(toggle[j]);  
       timerToggle[j] = !timerToggle[j];   
     } 
+    
   }
 
 
@@ -159,17 +165,20 @@ void loop() {
 #if NOSCREEN==0 // SCREEN UPDATE FUNCTION
   if (lcdState == 1) if (millis() - fpsTimer > (1000/(ScreenFrameRate*frameMultiplier)) ) ScreenUpdate();
   frameCount += 1;
-#endif 
 
-
-if (vPOTstick.takeScreenShoot==1)
-  {
-    Serial.println("Get ready for the pic: ");
-    tft.screenshotToConsole();
-    vPOTstick.takeScreenShoot = !vPOTstick.takeScreenShoot; 
+  if (bValue[8]==(ClickEncoder::Held) && toggleConfirmer[0] == 0) 
+  { 
+      toggleConfirmer[1] = !toggleConfirmer[1];
+      timerToConfirmDisplayAction = millis();
+      
+      if(toggleConfirmer[0] == 0 && toggleConfirmer[1] == 1)
+      {
+        Serial.println("Get ready for the pic: ");
+        tft.screenshotToConsole();
+        toggleConfirmer[0] = !toggleConfirmer[0];
+      }
   }
-
-
+#endif 
 }
  
  
