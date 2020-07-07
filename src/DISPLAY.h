@@ -520,5 +520,4 @@ void ScreenUpdate() /////////////////////////////// MAIN UPDATE
    }
   CheckForJoystick();
   fpsTimer = millis();
-
 }  

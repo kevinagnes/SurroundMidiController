@@ -7,39 +7,23 @@
 
 void setup() 
 {
-  
-#if debugging==true 
-Serial.begin(115200);
-Serial.println("Hello Bitches! I am awaken");
-#endif
+  RelativeCCSender::setMode(relativeCCmode::MACKIE_CONTROL_RELATIVE);
+
+  #if debugging==true 
+    Serial.begin(115200);
+    Serial.println("Hello Bitches! I am awaken");
+  #endif
   
   mux.begin(); // initiate Multiplexer for buttons 
   #if NOSCREEN==0          
-  pinMode(TFT_LED,OUTPUT);
-  digitalWrite(TFT_LED,lcdState);
+    pinMode(TFT_LED,OUTPUT);
+    digitalWrite(TFT_LED,lcdState);
   #endif  
-  
-  /*
-  for (int l=0;l<10;l++)
-  {
-    b[l].setButtonHeldEnabled(true);
-    b[l].setDoubleClickEnabled(true);
-  }
-  */
-  
-  RelativeCCSender::setMode(relativeCCmode::MACKIE_CONTROL_RELATIVE);
 
-  for (int r=0;r<10;r++)
-  {
-    encEQ[r].disable();
-  }
-
-  for (int r=0;r<10;r++)
-  {
-    encSMART[r].disable();
-  }
+  for (int r=0;r<10;r++) encEQ[r].disable();
+  for (int r=0;r<10;r++) encSMART[r].disable();
   
-#if NOSCREEN==0
+  #if NOSCREEN==0
   tft.begin();
   tft.setRotation(iliRotation90);
   tft.setArcParams(127);
@@ -52,12 +36,9 @@ Serial.println("Hello Bitches! I am awaken");
   tft.drawLine(0,20,320,20,WHITE);
   tft.drawLine(0,211,320,211,timeCodeColour[0]);
   tftStart();
-#endif  
+  #endif  
   
   Control_Surface.begin(); // Initialize tttapa's Control Surface Magic 
-
-
-
 }
 
 void programChange()
@@ -91,6 +72,23 @@ void programChange()
      }
     } 
 }
+void lcdControl()
+{
+  if (lcdLvl  < 5) lcdLvl += 1;
+  if (lcdLvl  > 4) lcdLvl  = 0;
+  if (lcdLvl == 1) lcdBrightness = 255;
+  if (lcdLvl == 2) lcdBrightness = 127;
+  if (lcdLvl == 3) lcdBrightness = 64;
+  if (lcdLvl == 4) lcdBrightness = 0;
+  if (lcdBrightness == 0) lcdState = 0;
+  if (lcdBrightness  > 1) lcdState = 1;
+  analogWrite(TFT_LED,lcdBrightness);
+}
+int changeBank(int j , int bankNumber)
+{
+  ccMode[j] = bankNumber;
+  bank[j].select(bankNumber);
+}
 
 void loop() {
 
@@ -102,99 +100,21 @@ void loop() {
       timerToToogleDisplay = 0;
   }
   
-for (int j=0; j<10; j++)
-{
-    if (encoderfn1.update() == Button::Pressed)
-    {  
-        ccMode[j] = 1;
-        bank[j].select(1);
-    }
-    if (encoderfn2.update() == Button::Pressed)
-    {
-        ccMode[j] = 2;
-        bank[j].select(2);
-    }
-    if (encoderfn1.update() == Button::Released && encoderfn2.update() == Button::Released)
-    {
-        ccMode[j] = 0;
-        bank[j].select(0);
-    }
-    if (!encoderB[j].getButtonState())
-    {
-        ccMode[j] = 3;
-        bank[j].select(3);
-    }
-}
- 
-////// click encoder
-/*
-  static uint32_t lastService = 0;
-  for (int i=0;i<10;i++) // START BUTTONS SERVICES
-  {
-    if (lastService + 1000 < micros())
-      {
-        b[i].service(); 
-      } 
-  }
 
-  for (int k=0;k<10;k++) // READ BUTTONS
+  // MAIN LOGIC ////////////////////////////////////////
+  for (int j=0; j<10; j++) 
   {
-    bValue[k] = b[k].getButton(); 
+    if (encoderfn1.update() == Button::Pressed) changeBank(j,1);
+    if (encoderfn2.update() == Button::Pressed) changeBank(j,2);
+    if (!encoderB[j].getButtonState()) changeBank(j,3);
+    if (encoderfn1.update() == Button::Released && encoderfn2.update() == Button::Released) changeBank(j,0);
   }
-*/
-/*
-  for (int j=0;j<10;j++) // LOGIC FOR ENCODER BUTTONS
-  {
-    
-    
-    
-    if (bValue[j]==(ClickEncoder::Clicked)) 
-    {
-      ccMode[j] = 1;
-      toggle[j] = !toggle[j];
-      bank[j].select(toggle[j]); 
-      timer[j] = millis(); 
-      timerToggle[j] = 1;
-    }
-    
-    if (bValue[j]==(ClickEncoder::DoubleClicked))
-    {
-      ccMode[j] = 2;
-      bank[j].select(2);
-      timer[j] = millis();   
-      timerToggle[j] = 1;          
-    }
-    
-    if (j < 8 && bValue[j]==(ClickEncoder::Held))
-    {   
-      ccMode[j] = 3;
-      bank[j].select(3); 
-      timer[j] = millis(); 
-      timerToggle[j] = 1;
-    } 
-    
-  
-    if ((millis()-timer[j])>timeBackToBankZero && timerToggle[j]==1) // If no activity returns to first parameter.
-    {
-      ccMode[j] = 0;
-      toggle[j] = 0;
-      bank[j].select(toggle[j]);  
-      timerToggle[j] = !timerToggle[j];   
-    } 
-    
-  }
-*/  
-//////
-
-  if (Fn4.update() == Button::Rising) // BUTTON FOR CHANGING MODES
-  {
-     programChange();
-  }
-
-#if NOSCREEN==0 // SCREEN UPDATE FUNCTION
+  if (joybutton.update() == Button::Rising) lcdControl();
+  if (Fn4.update() == Button::Rising) programChange();
+  ////////////////////////////////////////
+  #if NOSCREEN==0 // SCREEN UPDATE FUNCTION
   if (lcdState == 1) if (millis() - fpsTimer > (1000/(ScreenFrameRate*frameMultiplier)) ) ScreenUpdate();
-  frameCount += 1;
-/*
+  /*
   if (bValue[8]==(ClickEncoder::Held) && toggleConfirmer[0] == 0) 
   {
       toggleConfirmer[1] = !toggleConfirmer[1];
@@ -208,7 +128,7 @@ for (int j=0; j<10; j++)
       }
   }
   */
-#endif 
+  #endif 
 }
  
  

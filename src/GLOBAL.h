@@ -1,6 +1,6 @@
 #define debugging false  
 #define NOSCREEN 0
-#define ScreenFrameRate 30   // Refresh rate for the screen 
+#define ScreenFrameRate 15   // Refresh rate for the screen 
 
 #include <Encoder.h>         // Include the Encoder library.
 // #include <ClickEncoder.h>    // For the Encoder Buttons
@@ -97,7 +97,6 @@ const uint16_t xPos[8]  = { 35, 55, 120, 120, 190, 190, 260, 285},
                vuWidth = 30;           
 
 uint16_t vuColor[6] = {GREEN,GREEN,GREEN,GREEN,GREEN,GREEN},
-         frameCount,
          x,
          y = 172, // 172
          previousxx,
@@ -144,7 +143,9 @@ byte oldcc[10],          // EQ      Mode
      oldccc[10],         // GENERAL Mode
      oldSurroundJoy[2], 
      oldccmuxTransport[6],
-     oldccmuxChannel[6];
+     oldccmuxChannel[6], 
+     lcdLvl = 1,
+     lcdBrightness = 255;
 
 int oldcccc[10];      // SMART   Mode     
 

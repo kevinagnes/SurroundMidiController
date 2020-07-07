@@ -15,7 +15,8 @@ Bankable::CCValue<1> SurroundJoy[2] = {
 
 Button Fn4(mux.pin(1)),
        encoderfn1(mux.pin(8)),
-       encoderfn2(mux.pin(6));
+       encoderfn2(mux.pin(6)),
+       joybutton(mux.pin(10));
 
 Bank<4> bank0 = {1},
         bank1 = {1}, 
