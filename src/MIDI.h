@@ -3,7 +3,7 @@ USBMIDI_Interface midi;
 CD74HC4067 mux = {2, {A4, A5, A6, A7}}; // Multiplexer 4067 {SIGpin, {S0,S1,S2,S3}}
 
 PanJoystick joystickSurround = {{A1, A0}, mux.pin(3), CHANNEL_10}; // Surround Panner Joystick { {X,Y} , Activate Button No, Channel}
-ArrowJoystick vPOTstick = {{A1, A0}, mux.pin(6), mux.pin(3), mux.pin(10), CHANNEL_6}; 
+// ArrowJoystick vPOTstick = {{A1, A0}, mux.pin(6), mux.pin(3), mux.pin(10), CHANNEL_6}; 
 
 Bank<1> SurroundBank(2);
 Bankable::CCValue<1> SurroundJoy[2] = { 
@@ -11,7 +11,11 @@ Bankable::CCValue<1> SurroundJoy[2] = {
   {{SurroundBank,BankType::CHANGE_CHANNEL},{MCU::V_POT_2, CHANNEL_10}}, 
 };
 
-Button Fn4(mux.pin(1)); 
+
+
+Button Fn4(mux.pin(1)),
+       encoderfn1(mux.pin(8)),
+       encoderfn2(mux.pin(6));
 
 Bank<4> bank0 = {1},
         bank1 = {1}, 
@@ -28,8 +32,6 @@ Bank<4> bank0 = {1},
 Bank<2> sixButBank(6);
 Bank<1> sixButBank2(6);
 Bank<1> vPot(8);
-
-
 SwitchSelector Bselector = {sixButBank, mux.pin(8)};
 
 Bankable::CCButton muxb[6] = { // buttonMidi[6] = {119,118,117,116,115,114}; 
@@ -51,6 +53,20 @@ Encoder enc0(23,22),
         enc7(37,36),
         enc8(39,38),
         enc9(41,40);
+
+CCButton encoderB[] = // {20,24,28,52,56,60,85,102,106,110}
+{
+       {bEnc[0], {ccEnc[0]+shifter,CHANNEL_9}},
+       {bEnc[1], {ccEnc[0]+shifter,CHANNEL_10}},
+       {bEnc[2], {ccEnc[3]+shifter,CHANNEL_10}},
+       {bEnc[3], {ccEnc[3]+shifter,CHANNEL_9}},
+       {bEnc[4], {ccEnc[4]+shifter,CHANNEL_9}},
+       {bEnc[5], {ccEnc[5]+shifter,CHANNEL_9}},
+       {bEnc[6], {ccEnc[6]+shifter,CHANNEL_9}},
+       {bEnc[7], {ccEnc[7]+shifter,CHANNEL_9}},
+       {bEnc[8], {ccEnc[8]+shifter,CHANNEL_9}}, 
+       {bEnc[9], {ccEnc[9]+shifter,CHANNEL_9}},
+};        
         
 Bankable::BorrowedCCRotaryEncoder encEQ[10] = 
 {
@@ -173,7 +189,7 @@ Bankable::CCValue<1> ccmuxChannel[6] =
   {{sixButBank2, BankType::CHANGE_ADDRESS}, {buttonMidi[4], CHANNEL_7}},
   {{sixButBank2, BankType::CHANGE_ADDRESS}, {buttonMidi[5], CHANNEL_7}},
 };
-
+/*
 // Encoder button using ClickEncoder library
 DigitalButton b1 = DigitalButton(bEnc[0]);
 DigitalButton b2 = DigitalButton(bEnc[1]);
@@ -188,3 +204,5 @@ DigitalButton b10 = DigitalButton(bEnc[9]);
 DigitalButton b[10] = {b1,b2,b3,b4,b5,b6,b7,b8,b9,b10};
 
 ClickEncoder::Button bValue[10];
+
+*/

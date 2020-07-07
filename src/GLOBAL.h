@@ -3,7 +3,7 @@
 #define ScreenFrameRate 30   // Refresh rate for the screen 
 
 #include <Encoder.h>         // Include the Encoder library.
-#include <ClickEncoder.h>    // For the Encoder Buttons
+// #include <ClickEncoder.h>    // For the Encoder Buttons
 #include <Control_Surface.h> // Include the Control Surface library
 #include <AH/Hardware/ExtendedInputOutput/AnalogMultiplex.hpp>
 #include <AH/Hardware/Button.hpp>
@@ -53,7 +53,7 @@ unsigned long timer[10],
               fpsTimer,
               timerToConfirmDisplayAction;
               
-                 
+const byte shifter = 3;                 
 const byte ccEnc[10] = {20,24,28,52,56,60,85,102,106,110},  // CC messages
            bEnc[10]  = {43,42,45,44,47,46,49,48,51,50},     // Button Pins
            buttonMidi[] = {119,118,117,116,115,114};

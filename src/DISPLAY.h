@@ -367,9 +367,7 @@ void EqView() ///////////////////////////////////// EQ MODE UPDATE
           if (cc[j].getValue() > oldcc[j]) tft.fillArc(xPos[j],yPos[j], circleSize+5, 5, 0, cc[j].getValue(), GREEN);      
           tft.printAt(blankTxt, xPos[j]-15,yPos[j]-35);
           EqFreqToPrint[j] = (String)(int)mapLog(cc[j].getValue(),0,127,20,20000) + "Hz";
-          tft.printAt(EqFreqToPrint[j], xPos[j]-15,yPos[j]-35);
-          
-          
+          tft.printAt(EqFreqToPrint[j], xPos[j]-15,yPos[j]-35);          
         }
         if (ccMode[j] == 1) 
         {
@@ -391,16 +389,16 @@ void EqView() ///////////////////////////////////// EQ MODE UPDATE
         {
           if (cc[j].getValue()==127) 
           {
-            tft.fillArc(xPos[j],yPos[j], circleSize-10, 5, 0, 127, YELLOW);
             EqIsOn[j] = true;
+            tft.fillArc(xPos[j],yPos[j], circleSize-10, 5, 0, 127, YELLOW);
             tft.printAt(blankTxt, xPos[j]-15,yPos[j]-35);
             EqONOFFToPrint[j] = " ON";
             tft.printAt(EqONOFFToPrint[j], xPos[j]-14,yPos[j]-35);
           }
           if (cc[j].getValue()==0) 
           {
-            tft.fillArc(xPos[j],yPos[j], circleSize-10, 5, 0, 127, BLACK);
             EqIsOn[j] = false;
+            tft.fillArc(xPos[j],yPos[j], circleSize-10, 5, 0, 127, BLACK);
             tft.printAt(blankTxt, xPos[j]-15,yPos[j]-35);
             EqONOFFToPrint[j] = "OFF";
             tft.printAt(EqONOFFToPrint[j], xPos[j]-14,yPos[j]-35);

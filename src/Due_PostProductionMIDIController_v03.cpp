@@ -19,11 +19,13 @@ Serial.println("Hello Bitches! I am awaken");
   digitalWrite(TFT_LED,lcdState);
   #endif  
   
+  /*
   for (int l=0;l<10;l++)
   {
     b[l].setButtonHeldEnabled(true);
     b[l].setDoubleClickEnabled(true);
   }
+  */
   
   RelativeCCSender::setMode(relativeCCmode::MACKIE_CONTROL_RELATIVE);
 
@@ -100,8 +102,32 @@ void loop() {
       timerToToogleDisplay = 0;
   }
   
-
-//////
+for (int j=0; j<10; j++)
+{
+    if (encoderfn1.update() == Button::Pressed)
+    {  
+        ccMode[j] = 1;
+        bank[j].select(1);
+    }
+    if (encoderfn2.update() == Button::Pressed)
+    {
+        ccMode[j] = 2;
+        bank[j].select(2);
+    }
+    if (encoderfn1.update() == Button::Released && encoderfn2.update() == Button::Released)
+    {
+        ccMode[j] = 0;
+        bank[j].select(0);
+    }
+    if (!encoderB[j].getButtonState())
+    {
+        ccMode[j] = 3;
+        bank[j].select(3);
+    }
+}
+ 
+////// click encoder
+/*
   static uint32_t lastService = 0;
   for (int i=0;i<10;i++) // START BUTTONS SERVICES
   {
@@ -115,9 +141,13 @@ void loop() {
   {
     bValue[k] = b[k].getButton(); 
   }
-
+*/
+/*
   for (int j=0;j<10;j++) // LOGIC FOR ENCODER BUTTONS
   {
+    
+    
+    
     if (bValue[j]==(ClickEncoder::Clicked)) 
     {
       ccMode[j] = 1;
@@ -142,6 +172,7 @@ void loop() {
       timer[j] = millis(); 
       timerToggle[j] = 1;
     } 
+    
   
     if ((millis()-timer[j])>timeBackToBankZero && timerToggle[j]==1) // If no activity returns to first parameter.
     {
@@ -152,6 +183,7 @@ void loop() {
     } 
     
   }
+*/  
 //////
 
   if (Fn4.update() == Button::Rising) // BUTTON FOR CHANGING MODES
@@ -162,7 +194,7 @@ void loop() {
 #if NOSCREEN==0 // SCREEN UPDATE FUNCTION
   if (lcdState == 1) if (millis() - fpsTimer > (1000/(ScreenFrameRate*frameMultiplier)) ) ScreenUpdate();
   frameCount += 1;
-
+/*
   if (bValue[8]==(ClickEncoder::Held) && toggleConfirmer[0] == 0) 
   {
       toggleConfirmer[1] = !toggleConfirmer[1];
@@ -175,6 +207,7 @@ void loop() {
         toggleConfirmer[0] = !toggleConfirmer[0];
       }
   }
+  */
 #endif 
 }
  
