@@ -20,8 +20,16 @@ void setup()
     digitalWrite(TFT_LED,lcdState);
   #endif  
 
-  for (int r=0;r<10;r++) encEQ[r].disable();
-  for (int r=0;r<10;r++) encSMART[r].disable();
+  for (int r=0;r<10;r++) 
+  {
+    encEQ[r].disable();
+    encbEQ[r].disable();
+  }
+  for (int r=0;r<10;r++) 
+  {
+    encSMART[r].disable();
+    encbSMART[r].disable();
+  }
   
   #if NOSCREEN==0
   tft.begin();
@@ -33,7 +41,7 @@ void setup()
   tft.drawBitmap(hub_vetor_pbBitmaps,90,54,141,141,RED);
   delay(8000);
   tft.fillScreen(BLACK);
-  tft.drawLine(0,20,320,20,WHITE);
+  // tft.drawLine(0,20,320,20,WHITE);
   tft.drawLine(0,211,320,211,timeCodeColour[0]);
   tftStart();
   #endif  
@@ -55,20 +63,26 @@ void programChange()
      if (encGENERAL[r].isEnabled() && modechange == 2)
      {
         encGENERAL[r].disable();
+        encbGENERAL[r].disable();
         encSMART[r].resetPositionOffset();
         encSMART[r].enable();
+        encbSMART[r].enable();
      }
      else if (encSMART[r].isEnabled() && modechange == 0)
      {
         encSMART[r].disable();
+        encbSMART[r].disable();
         encEQ[r].resetPositionOffset();
         encEQ[r].enable();
+        encbEQ[r].enable();
      }
      else if (encEQ[r].isEnabled() && modechange == 1)
      {
         encEQ[r].disable();
+        encbEQ[r].disable();
         encGENERAL[r].resetPositionOffset();
         encGENERAL[r].enable();
+        encbGENERAL[r].enable();
      }
     } 
 }
@@ -96,38 +110,21 @@ void loop() {
   
   if (timerToToogleDisplay == 1)
   {
-      Control_Surface.MIDI().sendCC({3, CHANNEL_6}, 127);
+      Control_Surface.MIDI().sendCC({10, CHANNEL_4}, 127);
       timerToToogleDisplay = 0;
   }
   
-
-  // MAIN LOGIC ////////////////////////////////////////
   for (int j=0; j<10; j++) 
   {
     if (encoderfn1.update() == Button::Pressed) changeBank(j,1);
     if (encoderfn2.update() == Button::Pressed) changeBank(j,2);
-    if (!encoderB[j].getButtonState()) changeBank(j,3);
     if (encoderfn1.update() == Button::Released && encoderfn2.update() == Button::Released) changeBank(j,0);
   }
   if (joybutton.update() == Button::Rising) lcdControl();
   if (Fn4.update() == Button::Rising) programChange();
-  ////////////////////////////////////////
+
   #if NOSCREEN==0 // SCREEN UPDATE FUNCTION
   if (lcdState == 1) if (millis() - fpsTimer > (1000/(ScreenFrameRate*frameMultiplier)) ) ScreenUpdate();
-  /*
-  if (bValue[8]==(ClickEncoder::Held) && toggleConfirmer[0] == 0) 
-  {
-      toggleConfirmer[1] = !toggleConfirmer[1];
-      timerToConfirmDisplayAction = millis();
-      
-      if(toggleConfirmer[0] == 0 && toggleConfirmer[1] == 1)
-      {
-        Serial.println("Get ready for the pic: ");
-        tft.screenshotToConsole();
-        toggleConfirmer[0] = !toggleConfirmer[0];
-      }
-  }
-  */
   #endif 
 }
  

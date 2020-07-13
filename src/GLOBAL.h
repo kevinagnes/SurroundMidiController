@@ -143,7 +143,7 @@ byte oldcc[10],          // EQ      Mode
      oldccc[10],         // GENERAL Mode
      oldSurroundJoy[2], 
      oldccmuxTransport[6],
-     oldccmuxChannel[6], 
+     oldccmuxChannel[6],
      lcdLvl = 1,
      lcdBrightness = 255;
 

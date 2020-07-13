@@ -85,6 +85,10 @@ newEnd, float inputValue, float curve)
 
   return rangedValue;
 }
+uint8_t draw(const uint8_t icon[]) 
+{
+  tft.drawBitmap(icon,288,218,22,22,TRANSPORT_COLOUR);
+}
 void setTextSizeAndColor(uint8_t size, uint16_t colour)
 {
   tft.setTextScale(size);
@@ -107,18 +111,16 @@ void transportIcons() ///////////////////////////// TRANSPORT UPDATE
           
           if (transportToggle[i] != oldtransportToggle[i])
           {
-            tft.fillRect(288,218,24,24,BLACK); // Eraser
+            tft.fillRect(288,218,25,25,BLACK); // Eraser
             if (transportToggle[0] == 1) TRANSPORT_COLOUR = timeCodeColour[2];
             if (transportToggle[0] == 0) TRANSPORT_COLOUR = timeCodeColour[0];
-
-            if (transportToggle[4] == 1 && transportToggle[1] == 1 && transportToggle[0] == 0) tft.drawBitmap(stopLoopBitmaps,288,218,22,22,TRANSPORT_COLOUR);
-            if (transportToggle[4] == 1 && transportToggle[1] == 0 && transportToggle[0] == 0) tft.drawBitmap(stopBitmaps,288,218,22,22,TRANSPORT_COLOUR);
-            if (transportToggle[1] == 1 && transportToggle[1] == 1 && transportToggle[0] == 0) tft.drawBitmap(playLoopBitmaps,288,218,22,22,TRANSPORT_COLOUR);
-            if (transportToggle[5] == 1 && transportToggle[1] == 0 && transportToggle[0] == 0) tft.drawBitmap(playBitmaps,288,218,22,22,TRANSPORT_COLOUR); 
-            if (transportToggle[0] == 1 && transportToggle[1] == 1)                            tft.drawBitmap(recLoopBitmaps,288,218,22,22,TRANSPORT_COLOUR);
-            if (transportToggle[0] == 1 && transportToggle[1] == 0)                            tft.drawBitmap(recBitmaps,288,218,22,22,TRANSPORT_COLOUR);
+            if (transportToggle[4] == 1 && transportToggle[1] == 0 && transportToggle[0] == 0) draw(stopBitmaps);
+            if (transportToggle[4] == 1 && transportToggle[1] == 1 && transportToggle[0] == 0) draw(stopLoopBitmaps);        
+            if (transportToggle[5] == 1 && transportToggle[1] == 1 && transportToggle[0] == 0) draw(playLoopBitmaps);
+            if (transportToggle[5] == 1 && transportToggle[1] == 0 && transportToggle[0] == 0) draw(playBitmaps);
+            if (transportToggle[0] == 1 && transportToggle[1] == 1)                            draw(recLoopBitmaps);
+            if (transportToggle[0] == 1 && transportToggle[1] == 0)                            draw(recBitmaps);
           }
-
           oldtransportToggle[i] = transportToggle[i];      
     }
 }
@@ -189,6 +191,9 @@ void firstCallEqView() //////////////////////////// EQ VIEW build
 {
     for (int j=0; j<8; j++)
     {            
+      setTextSizeAndColor(1,WHITE);
+      tft.printAt(EqFreqToPrint[j], xPos[j]-15,yPos[j]-35); 
+
       bank[j].select(3);
       tft.fillArc(xPos[j],yPos[j], circleSize-10, 5, 0, cc[j].getValue() , YELLOW);
       if (cc[j].getValue() == 127) EqIsOn[j] = true; 
@@ -208,10 +213,13 @@ void firstCallEqView() //////////////////////////// EQ VIEW build
 void firstCallSmartView() ///////////////////////// SMART VIEW build
 {
     tft.setArcParams(11);
+    tft.setTextScale(1);
     for (int j=0; j<8; j++)
     {   
       if (j >= 4) {smartColour = PINK;}
       else        {smartColour = CYAN;} 
+      tft.printAt(Storedbuffer1[j], xxPos[j]-15, yyPos[j]-28);
+      tft.printAt(Storedbuffer2[j], xxPos[j]-15, yyPos[j]+25);
       tft.fillCircle(xxPos[j],yyPos[j], circleSize - 15, smartColour);
       tft.fillArc(xxPos[j],yyPos[j], circleSize - 5, 6, 0, cccc[j].getPosition(), smartColour);     
     }  
@@ -230,7 +238,7 @@ void topParametersUpdate() //////////////////////// UPDATE PARAMETERS AT THE TOP
   }
   if (modechange==0) // UPDATE VALUES FOR EQ VIEW
   {
-    if (cc[i].getValue() != oldcc[i])
+    if (cc[i].getValue() != oldcc[i] || ccc[i].getValue() != oldccc[i])
     {
       if (EqIsOn[i] == true)  tft.setTextColor(GREEN);
       if (EqIsOn[i] == false) tft.setTextColor(RED);
@@ -241,6 +249,7 @@ void topParametersUpdate() //////////////////////// UPDATE PARAMETERS AT THE TOP
       tft.printAlignedOffseted(EQText1[i] + " " + GeneralPrinter, gTextAlignTopLeft, 40, 26, gTextEraseFullLine);
     }
     oldcc[i] = cc[i].getValue();
+    oldccc[i] = ccc[i].getValue();
   }
   if (modechange==2) // UPDATE VALUES FOR SMART VIEW
   {
@@ -341,11 +350,14 @@ void SmartView() ////////////////////////////////// SMART MODE UPDATE
         #if debugging==true
         Serial.println("V_POT_" + (String)j + ": " + (String)cccc[j].getPosition());
         #endif
+      } 
 
+      if (cccc[j].getPosition() != oldcccc[j]) 
+      {
         if (cccc[j].getPosition() < oldcccc[j]) tft.fillArc(xxPos[j],yyPos[j], circleSize - 5, 6, cccc[j].getPosition(), 0, BLACK);
         if (cccc[j].getPosition() > oldcccc[j]) tft.fillArc(xxPos[j],yyPos[j], circleSize - 5, 6, 0, cccc[j].getPosition(), smartColour);      
 
-      }  
+      }
       oldcccc[j] = cccc[j].getPosition();
     }
     tft.setArcParams(127); 
@@ -384,27 +396,27 @@ void EqView() ///////////////////////////////////// EQ MODE UPDATE
           tft.printAt(blankTxt, xPos[j]-15,yPos[j]-35);
           EqQToPrint[j] = (String)mapLog(cc[j].getValue(),0.0,127.0,.1,100.0);
           tft.printAt(EqQToPrint[j], xPos[j]-15,yPos[j]-35);
-        }
-        if (ccMode[j] == 3) 
+        }  
+      } 
+     if (ccc[j].getValue() != oldccc[j])
+     {
+        if (ccc[j].getValue()==127) 
         {
-          if (cc[j].getValue()==127) 
-          {
-            EqIsOn[j] = true;
-            tft.fillArc(xPos[j],yPos[j], circleSize-10, 5, 0, 127, YELLOW);
-            tft.printAt(blankTxt, xPos[j]-15,yPos[j]-35);
-            EqONOFFToPrint[j] = " ON";
-            tft.printAt(EqONOFFToPrint[j], xPos[j]-14,yPos[j]-35);
-          }
-          if (cc[j].getValue()==0) 
-          {
-            EqIsOn[j] = false;
-            tft.fillArc(xPos[j],yPos[j], circleSize-10, 5, 0, 127, BLACK);
-            tft.printAt(blankTxt, xPos[j]-15,yPos[j]-35);
-            EqONOFFToPrint[j] = "OFF";
-            tft.printAt(EqONOFFToPrint[j], xPos[j]-14,yPos[j]-35);
-          }
-         }      
-      }    
+          EqIsOn[j] = true;
+          tft.fillArc(xPos[j],yPos[j], circleSize-10, 5, 0, 127, YELLOW);
+          tft.printAt(blankTxt, xPos[j]-15,yPos[j]-35);
+          EqONOFFToPrint[j] = " ON";
+          tft.printAt(EqONOFFToPrint[j], xPos[j]-14,yPos[j]-35);
+        }
+        if (ccc[j].getValue()==0) 
+        {
+          EqIsOn[j] = false;
+          tft.fillArc(xPos[j],yPos[j], circleSize-10, 5, 0, 127, BLACK);
+          tft.printAt(blankTxt, xPos[j]-15,yPos[j]-35);
+          EqONOFFToPrint[j] = "OFF";
+          tft.printAt(EqONOFFToPrint[j], xPos[j]-14,yPos[j]-35);
+        }  
+      }
     }
 }
 
@@ -448,7 +460,7 @@ void tftStart() /////////////////////////////////// SCREEN START AND RESET
       {
         if (toggleDisplay == 1) 
         {
-          Control_Surface.MIDI().sendCC({3, CHANNEL_6}, 127);
+          Control_Surface.MIDI().sendCC({10, CHANNEL_4}, 127);
           toggleDisplay = !toggleDisplay;
         }
         else {}
@@ -459,7 +471,7 @@ void tftStart() /////////////////////////////////// SCREEN START AND RESET
       {
         if (toggleDisplay == 1) 
         {
-          Control_Surface.MIDI().sendCC({3, CHANNEL_6}, 127);
+          Control_Surface.MIDI().sendCC({10, CHANNEL_4}, 127);
           toggleDisplay = !toggleDisplay;
         }
         else {}
@@ -470,7 +482,7 @@ void tftStart() /////////////////////////////////// SCREEN START AND RESET
       {
         if (toggleDisplay == 0)
         {
-         Control_Surface.MIDI().sendCC({3, CHANNEL_6}, 127);
+         Control_Surface.MIDI().sendCC({10, CHANNEL_4}, 127);
          toggleDisplay = !toggleDisplay;
         }
         else {}
